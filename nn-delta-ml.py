@@ -16,11 +16,11 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler                       
 from sklearn.model_selection import train_test_split                   
                                                                        
-import keras                                                           
-from keras.optimizers import Adam                                      
-from keras.models import Model, Sequential                             
-from keras.layers import Input, Dense, Dropout, merge                  
-from keras.callbacks import ModelCheckpoint, Callback, EarlyStopping   
+import tensorflow.keras                                                           
+from tensorflow.keras.optimizers import Adam                                      
+from tensorflow.keras.models import Model, Sequential                             
+from tensorflow.keras.layers import Input, Dense, Dropout, merge                  
+from tensorflow.keras.callbacks import ModelCheckpoint, Callback, EarlyStopping   
                                                                        
 import ase                                                             
 from ase import io
