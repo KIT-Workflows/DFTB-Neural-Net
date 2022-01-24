@@ -4,6 +4,7 @@ import yaml, tarfile
 import os                                                             
 import time   
 import pickle
+import math
 import sys
 import numpy as np                                                     
 import pandas as pd   
@@ -100,37 +101,37 @@ nAtoms, xyzArr = xyzArr_generator(md_train_arr)
 
 # Calculate distance dataframe from xyz coordinates
 distances = src_nogrd.distances_from_xyz(xyzArr, nAtoms)
-distances.head()
-print(distances.shape)
 
 at_idx_map_naive = at_idx_map_generator_old(md_train_arr[0])
 ## Hotfix for atom ordering without touching at_idx_map_generator
 at_idx_map_old = {el : at_idx_map_naive[el] for el in SUPPORTED_ELEMENTS}
-print(at_idx_map_old)
 
 at_idx_map = at_idx_map_generator(md_train_arr[0])
-print(at_idx_map)
-print(at_idx_map_naive)
 
-distances.max
+lst=list(range(0, nAtoms))
+def find_tuples(lst, key, num=3):
+    return [i for i in itertools.permutations(lst, num) if sum(i)==key]
+angles=find_tuples(lst,nAtoms,3)
+
+all_ang=[]
+for j in range(0,len(md_train_arr)):
+    for i in range (0,nAtoms):
+        all_ang.append(md_train_arr[j].get_angle(*angles[i]))
 
 # radial symmetry function parameters
-# Need to automate the Rs_array part
-cutoff_rad = 10
-#Rs_array = np.linspace(0.8, 5, num=24)   # based on max and min of the distances
-Rs_array = np.linspace(0.2, 5, num=12)   # based on max and min of the distances
-eta_array = 5/(np.square(0.2*Rs_array))
+cutoff_rad = max(distances.max(1))
+Rs_array = np.linspace(distances.min(1), max(distances.max(1)), num=int(max(distances.max(1))-min(distances.min(1))))   # based on max and min of the distances
+eta_array = (int(max(distances.max(1))-min(distances.min(1))))/(2*np.square(min(distances.min(1))*Rs_array))
 rad_params = np.array([(Rs_array[i], eta_array[i], cutoff_rad) for i in range(len(Rs_array)) ])
 
 
-
 # angular symmetry function parameters
-cutoff_ang = 5
+cutoff_ang = math.radians(max(all_ang))
 lambd_array = np.array([-1, 1])
 #zeta_array = np.array([1, 4, 16])
-zeta_array = np.array([1,4,16])
+zeta_array = np.array([math.radians(sum(all_ang)/len(all_ang))])
 #eta_ang_array = np.array([0.001, 0.01, 0.05])
-eta_ang_array = np.array( [0.001, 0.01, 0.05])
+eta_ang_array = np.array([math.radians(min(all_ang))])
     
 # Each of the element need to be parametrized for all of the list. 
 angList = np.array([e1+e2 for e1, e2 in comb_replace(SUPPORTED_ELEMENTS, 2)])
@@ -302,6 +303,7 @@ def get_inp(at_idx_map, Gfunc_scaled, Feat_scaled):
     
     return pd.Series(inp_arr)
     
+os.mkdir('model_2B_nUnit')
 model_folder = "model_2B_nUnit"
 #!mkdir $model_folder
 trainer = netTrainer(model, verbose=1, folder=model_folder)
@@ -371,6 +373,8 @@ model.get_layer("H-subnet").save(os.path.join(save_dir, 'H-subnet.h5'))
 model.get_layer("S-subnet").save(os.path.join(save_dir, 'S-subnet.h5'))
 model.get_layer("C-subnet").save(os.path.join(save_dir, 'C-subnet.h5'))
 
+os.mkdir('Model')
+save_dir = "Model"
 
 model.save(os.path.join(save_dir, 'model.h5'))
 
