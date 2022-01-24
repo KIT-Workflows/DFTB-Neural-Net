@@ -172,7 +172,7 @@ with open(os.path.join(path, ang_name), "w") as ang_f:
 
 Gfunc_data = src_nogrd.symmetry_function(distances, at_idx_map, Gparam_dict)
 
-n_symm_func = Gfunc_data['C'][at_idx_map['C'][0]].shape[1]
+n_symm_func =Gfunc_data[SUPPORTED_ELEMENTS[0]][0][0].shape[0]
 builder = netBuilder(SUPPORTED_ELEMENTS, n_symm_func)
 subnets = builder.build_subnets(n_dense_layers=2, n_units=15, 
                     hidden_activation='tanh',
@@ -275,7 +275,7 @@ def split_training_data(Feat_data, at_idx_map, train_idx, val_idx, test_idx):
 
 
 train_scaled, val_scaled, test_scaled = split_training_data(Gfunc_data, at_idx_map, train_idx, val_idx, test_idx)
-print(test_scaled['C'][0].shape)
+print(test_scaled[SUPPORTED_ELEMENTS[0]][0].shape)
 #Feat_train_scaled, Feat_val_scaled, Feat_test_scaled = split_training_data(Feat_data, at_idx_map, train_idx, val_idx, test_idx)
 #print(Feat_train_scaled['H'][4].shape)
 
