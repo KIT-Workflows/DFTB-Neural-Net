@@ -20,7 +20,7 @@ from sklearn.model_selection import train_test_split
 import tensorflow.keras                                                           
 from tensorflow.keras.optimizers import Adam                                      
 from tensorflow.keras.models import Model, Sequential                             
-from tensorflow.keras.layers import Input, Dense, Dropout, merge                  
+from tensorflow.keras.layers import Input, Dense, Dropout         
 from tensorflow.keras.callbacks import ModelCheckpoint, Callback, EarlyStopping   
                                                                        
 import ase                                                             
