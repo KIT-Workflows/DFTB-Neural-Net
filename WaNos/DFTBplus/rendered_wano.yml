@@ -1,0 +1,22 @@
+DFTB options:
+  Max SCC iterations: 200
+  SCC calculation: true
+  Slater-Koster parameters: 3ob
+Follow-up calculation: false
+Initial guess:
+  Charge: -1
+  Multiplicity: 1
+  Use old charges: false
+Machine Learning: true
+Model: Model.tar
+Molecular structure:
+  Import KORINGA: false
+  KORINGA_file: KORINGA.yml
+  Structure file: initial_structure.xyz
+  Use old structure: false
+Results from old calculation: old_calc.tar.xz
+Symmetry functions file: Symmetryfile.param
+Type of calculation:
+  Max optimization cycles: 5000
+  Optimisation algorithm: ConjugateGradient
+  Structure optimisation: true
