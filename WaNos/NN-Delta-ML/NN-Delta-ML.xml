@@ -1,0 +1,51 @@
+<WaNoTemplate>
+    
+    <WaNoMeta>
+ 		<Author>
+  			<Name> Claudia Leticia Gomez Flores,  
+				  	Celso R. C. Rego </Name>
+  			<Email> claudia.flores@kit.edu 
+				   celsorego@kit.edu</Email>
+ 		</Author>
+
+		<Description>
+   			This WaNo performs NN delta-machine learning approach for potertial.
+ 		</Description>
+
+ 		<Keyword>NN, ML</Keyword>
+	</WaNoMeta>
+	
+	<WaNoRoot name="NN-Delta-ML">
+		<WaNoFile logical_filename="geometry" name="Geometries">C:\Users\claud\appended_structures.xyz</WaNoFile>
+		<WaNoFile logical_filename="data_energy" name="Energies">C:\Users\claud\rearranged-table.csv</WaNoFile>
+		<WaNoFile logical_filename="ref_dftb" name="Ref-Energy-DFTB">C:\Users\claud\Documents\CN\WaNos\NN-Delta-ML\ref_dftb</WaNoFile>
+		<WaNoFile logical_filename="ref_dft" name="Ref-Energy-DFT">C:\Users\claud\Documents\CN\WaNos\NN-Delta-ML\ref_dft</WaNoFile>
+		<WaNoInt name="Neurons" description = "Hidden layer neurons">15</WaNoInt>
+		<WaNoFloat name="Learning rate" description = "Learning rate">0.00005</WaNoFloat>
+		<WaNoFloat name="Cut-off distance" description = "Maximum distance to learn the energy difference">5</WaNoFloat>
+		<WaNoInt name="Hidden Layers" description = "Hidden layers">3</WaNoInt>
+		<WaNoDropDown name="Activation function" description = "To define">
+                    <Entry id="0" chosen="TRUE">tanh</Entry>
+                    <Entry id="1">relu</Entry>
+                    <Entry id="2">sigmoid</Entry>
+                </WaNoDropDown>
+	</WaNoRoot>
+	
+	<WaNoExecCommand>
+		source  /home/ws/qs7669/anaconda3/etc/profile.d/conda.sh
+		conda activate dftb-nn
+		python nn-delta-ml.py
+		python graphs.py
+	</WaNoExecCommand>
+	
+	<WaNoInputFiles>
+		<WaNoInputFile logical_filename="nn-delta-ml.py">nn-delta-ml.py</WaNoInputFile>
+		<WaNoInputFile logical_filename="graphs.py">nn-delta-ml.py</WaNoInputFile>
+		<WaNoInputFile logical_filename="src.tar">src.tar</WaNoInputFile>  
+	</WaNoInputFiles>
+
+	<WaNoOutputFiles>
+		<WaNoOutputFile>Model.tar</WaNoOutputFile>
+		<WaNoOutputFile>symFunc_all.param</WaNoOutputFile>
+	</WaNoOutputFiles>
+</WaNoTemplate>
