@@ -1,0 +1,8 @@
+Delete-Files: false
+Files:
+- Search-Parameters:
+  - var: dftb_energy
+  Search-in-file: dftb_plus_results.yml
+- Search-Parameters:
+  - var: orca_energy
+  Search-in-file: orca_results.yml
