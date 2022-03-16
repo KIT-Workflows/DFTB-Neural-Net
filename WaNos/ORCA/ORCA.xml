@@ -1,0 +1,53 @@
+<WaNoTemplate>
+    
+    <WaNoMeta>
+ 		<Author>
+  			<Name> Celso R. C. Rego </Name>
+  			<Email>celsorego@kit.edu</Email>
+ 		</Author>
+
+		<Description>
+   			This WaNo performs DFTB simulation using DFTB+ code, which is
+			a fast and efficient versatile quantum mechanical
+			simulation method. In this WaNo, the SlaterKosterFiles
+			path should be specified in a single folder.
+ 		</Description>
+
+ 		<Keyword>DFTB+</Keyword>
+	</WaNoMeta>
+	
+	<WaNoRoot name="ORCA">
+		<WaNoFile logical_filename="geometry" name="Geometry-file">file.xyz</WaNoFile>
+		<WaNoString name="label">test</WaNoString>
+		<WaNoString name="Functional">B3LYP</WaNoString>
+		<WaNoString name="Basis-set">def2-TZVP</WaNoString>
+		<WaNoInt name="Charge">0</WaNoInt>
+		<WaNoInt name="Multiplicity">1</WaNoInt>
+		<WaNoString name="var-name">tot_energy</WaNoString>
+
+		<WaNoBool name="Import KORINGA">False</WaNoBool>
+        <WaNoFile logical_filename="KORINGA.yml" visibility_condition="%s == True" visibility_var_path="Import KORINGA" name="KORINGA_file">KORINGA path file</WaNoFile>
+	</WaNoRoot>
+	
+	<WaNoExecCommand>
+		source  ~/anaconda3/etc/profile.d/conda.sh
+		conda activate dftb-nn
+		python orca_in.py
+
+		chmod +x run-ORCA.sh
+		bash run-ORCA.sh
+		python results_orca.py 
+	</WaNoExecCommand>
+	
+	<WaNoInputFiles>
+		<WaNoInputFile logical_filename="orca_in.py">orca_in.py</WaNoInputFile>
+		<WaNoInputFile logical_filename="run-ORCA.sh">run-ORCA.sh</WaNoInputFile>
+		<WaNoInputFile logical_filename="results_orca.py">results_orca.py</WaNoInputFile>  
+		
+	</WaNoInputFiles>
+
+	<WaNoOutputFiles>
+		<WaNoOutputFile>orca.out</WaNoOutputFile>
+		<WaNoOutputFile>orca_results.yml</WaNoOutputFile>
+	</WaNoOutputFiles>
+</WaNoTemplate>
