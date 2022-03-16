@@ -1,0 +1,40 @@
+<WaNoTemplate>
+    
+    <WaNoMeta>
+ 		<Author>
+  			<Name> Claudia Leticia Gomez Flores and Celso R. C. Rego </Name>
+  			<Email> claudia.flores@kit.edu and celsorego@kit.edu</Email>
+ 		</Author>
+
+		<Description>
+   			This WaNo performs generate the delta values
+ 		</Description>
+
+ 		<Keyword>DFTB+</Keyword>
+	</WaNoMeta>
+	
+	<WaNoRoot name="Delta-gen">
+		<WaNoFile logical_filename="geometry" name="Geometry-file">.tad or .zip</WaNoFile>
+		<WaNoString name="label">test</WaNoString>
+		<WaNoString name="Functional">B3LYP</WaNoString>
+		<WaNoString name="Basis-set">def2-TZVP</WaNoString>
+	</WaNoRoot>
+	
+	<WaNoExecCommand>
+		source  /home/ws/gt5111/miniconda3/etc/profile.d/conda.sh
+		conda activate
+		python orca_in.py
+
+		chmod +x run-ORCA.sh
+		bash run-ORCA.sh
+	</WaNoExecCommand>
+	
+	<WaNoInputFiles>
+		<WaNoInputFile logical_filename="orca_in.py">orca_in.py</WaNoInputFile>
+		<WaNoInputFile logical_filename="run-ORCA.sh">run-ORCA.sh</WaNoInputFile>
+	</WaNoInputFiles>
+
+	<WaNoOutputFiles>
+		<WaNoOutputFile>orca.out</WaNoOutputFile>
+	</WaNoOutputFiles>
+</WaNoTemplate>
