@@ -1,0 +1,5 @@
+Input-file: input-dict.yml
+Multivariable-mode: true
+Structures: Structures.tar.xz
+Structures-int: '1'
+Structures-name: name.xyz
