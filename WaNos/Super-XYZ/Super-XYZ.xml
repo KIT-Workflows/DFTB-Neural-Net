@@ -1,0 +1,35 @@
+<WaNoTemplate>
+  
+<WaNoMeta>
+ 		<Author>
+  			<Name> Celso R. C. Rego </Name>
+  			<Email>celsorego@kit.edu</Email>
+ 		</Author>
+
+		<Description>
+   		This WaNo append all files from .tar file.
+		</Description>
+
+ 		<Keyword>Multvariables</Keyword>
+</WaNoMeta>
+  
+<WaNoRoot name="Super-XYZ">  
+  <WaNoFile logical_filename="Molecules.tar.xz"  name = "Molecules">Molecules.tar.xz</WaNoFile>
+  <WaNoFile logical_filename="Table-var.csv"  name = "Table energy">Table-var.csv</WaNoFile>
+</WaNoRoot>
+
+  <WaNoExecCommand>
+		source  /home/ws/qs7669/anaconda3/etc/profile.d/conda.sh
+		conda activate dftb-nn
+    python append_xyz.py
+  </WaNoExecCommand>
+  
+    <WaNoInputFiles>
+      <WaNoInputFile logical_filename="append_xyz.py">append_xyz.py</WaNoInputFile>
+    </WaNoInputFiles>   
+    
+    <WaNoOutputFiles>
+      <WaNoOutputFile>appended_structures.xyz</WaNoOutputFile>
+      <WaNoOutputFile>rearranged-table.csv</WaNoOutputFile>
+    </WaNoOutputFiles>
+</WaNoTemplate>
