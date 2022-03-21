@@ -1,35 +1,44 @@
 <html>
 <h1> Learning report </h1>
 
-<p style="color:blue;font-size:24px;">
+<p style="color:rgba(0, 255, 213, 0.534);font-size:24px;">
 
 </p>
 
-<p>The data distribution can be observed at Fig.1, the training data had a range from <li>{{ "Train range" }}</li> kcal/mol and the test data had ranged on <li>{{ "Test range" }}</li> kcal/mol.:</p>
+<p>The data distribution can be observed at Fig.1, the training data had a range from {{ Train_Range }} kcal/mol and the
+ test data had ranged on {{ Test_Range }} kcal/mol.:</p>
 
 <figure>
-<img src="Histogram.png" alt="RDFs" style="width:55%">
+<img src="Histogram.png" alt="RDFs" style="width:35%">
 <figcaption>Fig.1  - Data distribution
 </figure>
 
-The corelation between the ORCA generated data against the DFTB+ generated data can be seen in Fig. 2, while the delta correlation can be seen at Fig. 3. The energies used as reference were <li>{{ "DFTB reference energy" }}</li>
-for DFTB and <li>{{ "ORCA reference energy" }}</li> for DFT.
+
+The corelation between the ORCA generated data against the DFTB+ generated data can be seen in Fig. 2, while the delta correlation can be seen
+ at Fig. 3. The energies used as reference were:
+<li>{{ DFTB_reference_energy }}for DFTB</li>
+<li>{{ ORCA_reference_energy }} for DFT</li>
 <figure>
 <img src="Correlation.png" alt="RDFs" style="width:55%">
 <figcaption>Fig.2  - ORCA vs. DFTB
 </figure>
 
+
 <figure>
 <img src="Delta_correlation.png" alt="RDFs" style="width:55%">
 <figcaption>Fig.3  - Delta correlation
+</figure>
 
-The used neural network consisted on <li>{{ "Neurons" }}</li> neurons distributed in <li>{{ "Layers" }}</li> hidden layers for each <li>{{ "Elements" }}</li> of the system. The activation function was <li>{{ "Activation function" }}</li>. The input layer consisted on <li>{{ "Number of symmetries" }}</li> for each one of the atoms. 
-The data set was divided in Training, Validation and Test with its respective number of structures: <li>{{ "Training structures" }}</li>,<li>{{ "Validation structures" }}</li>, <li>{{ "Testing. structures" }}</li>.
+The used neural network consisted on {{ Neurons }} neurons distributed in {{ Layers }} hidden layers for each {{ Elements }} of the system. 
+The activation function was {{ Activation_function }}. The input layer consisted on {{ Number_of_symmetries }} for each one of the atoms. 
+The data set was divided in Training, Validation and Test with its respective number of structures: {{ Training_structures }}, {{ Validation_structures }}, {{ Testing_structures }}.
 
-The RMSE of the training was <li>{{ "RMSE" }}</li> and the MAE was of <li>{{ "MAE" }}</li>. The accuarcy plot of the test set can be seen at Fig.4.
+
+The RMSE of the training was {{ RMSE }} and the MAE was of {{ MAE }}. The accuarcy plot of the test set can be seen at Fig.4.
 
 <figure>
 <img src="TestSet.png" alt="RDFs" style="width:55%">
 <figcaption>Fig. 4 - Test Set
+</figure>
 
 </html>

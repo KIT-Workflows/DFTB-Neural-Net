@@ -1,0 +1,17 @@
+Activation function: tanh
+DFTB reference energy: -9922.47050 kcal/mol
+Elements:
+- C
+- S
+- H
+Layers: 1
+MAE: 11.2328 kcal/mol
+Neurons: 5
+Number of symmetries: 90
+ORCA reference energy: -824649.19290 kcal/mol
+RMSE: 11.2328 kcal/mol
+Test Range: 21.69354 to 21.69354
+Testing structures: 1.0
+Train Range: 9.94637 to  36.89982
+Training structures: 8.0
+Validation structures: 1.0

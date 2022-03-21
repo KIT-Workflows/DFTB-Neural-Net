@@ -40,12 +40,14 @@
 	
 	<WaNoInputFiles>
 		<WaNoInputFile logical_filename="nn-delta-ml.py">nn-delta-ml.py</WaNoInputFile>
-		<WaNoInputFile logical_filename="graphs.py">nn-delta-ml.py</WaNoInputFile>
+		<WaNoInputFile logical_filename="graphs.py">graphs.py</WaNoInputFile>
 		<WaNoInputFile logical_filename="src.tar">src.tar</WaNoInputFile>  
+		<WaNoInputFile logical_filename="report_template.body">report_template.body</WaNoInputFile> 
 	</WaNoInputFiles>
 
 	<WaNoOutputFiles>
 		<WaNoOutputFile>Model.tar</WaNoOutputFile>
 		<WaNoOutputFile>symFunc_all.param</WaNoOutputFile>
+		<WaNoOutputFile>output_dict.yml</WaNoOutputFile>
 	</WaNoOutputFiles>
 </WaNoTemplate>

@@ -397,20 +397,20 @@ if __name__ == '__main__':
 
     fname = "output_dict.yml"
     thisdict = {
-    "RMSE": '%.4f kcal/mol' % err_test,
-    "MAE": '%.4f kcal/mol' % errAbs_test,
-    "Train Range": '%.5f to  %.5f' %(y_train.min(), y_train.max() ),
-    "Test Range": '%.5f to %.5f' %(y_test.min(), y_test.max() ),
-    "Training structures": len(data_set)*0.8,
-    "Validation structures": len(data_set)*0.1,
-    "Testing structures": len(data_set)*0.1,
-    "DFTB reference energy": '%.5f kcal/mol'%((ref_dftb['dftb_energy'].sum())*627.5),
-    "ORCA reference energy": '%.5f kcal/mol'%((ref_orca['orca_energy'].sum())*627.5)
-    "Neurons"=neurons
-    "Layers"=layerss
-    "Elements"=SUPPORTED_ELEMENTS
-    "Number of symmetries"=n_symm_func
-    "Activation function"=activations(act_funct)
+    "RMSE":'%.4f kcal/mol' % err_test,
+    "MAE":'%.4f kcal/mol' % errAbs_test,
+    "Train_Range":'%.5f to %.5f' %(y_train.min(), y_train.max() ),
+    "Test_Range":'%.5f to %.5f' %(y_test.min(), y_test.max() ),
+    "Training_structures":len(data_set)*0.8,
+    "Validation_structures":len(data_set)*0.1,
+    "Testing_structures":len(data_set)*0.1,
+    "DFTB_reference_energy":'%.5f kcal/mol'%((ref_dftb['dftb_energy'].sum())*627.5),
+    "ORCA_reference_energy":'%.5f kcal/mol'%((ref_orca['orca_energy'].sum())*627.5),
+    "Neurons":neurons,
+    "Layers":layerss,
+    "Elements":list(dict.fromkeys(elem)),
+    "Number_of_symmetries":n_symm_func,
+    "Activation_function":activations(act_funct)
     }
 
     with open(fname, 'w') as yaml_file:
