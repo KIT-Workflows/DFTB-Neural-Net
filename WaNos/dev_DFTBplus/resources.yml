@@ -1,0 +1,15 @@
+- - True
+  - CPUs per Node
+  - 16
+- - True
+  - Number of Nodes
+  - 1
+- - True
+  - Memory [MB]
+  - 32000
+- - True
+  - Time [Wall]
+  - 3600
+- - True
+  - Queue
+  - batch
