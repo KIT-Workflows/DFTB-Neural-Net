@@ -30,7 +30,7 @@ The corelation between the ORCA generated data against the DFTB+ generated data 
 </figure>
 
 The used neural network consisted on {{ output_dict["Neurons"] }} neurons distributed in {{ output_dict["Layers"] }} hidden layers for each element of the system. 
-The activation function was {{ output_dict["Activation_function"] }}. The input layer consisted on {{ output_dict["Number_of_symmetries"] }} for each one of the atoms. 
+The activation function was {{ output_dict["Activation_function"] }}. The input layer consisted on {{ output_dict["Number_of_symmetries"] }} symmetry vectors for each one of the atoms. 
 The data set was divided in Training, Validation and Test with its respective number of structures: {{ output_dict["Training_structures"] }}, {{ output_dict["Validation_structures"] }}, {{ output_dict["Testing_structures"] }}.
 
 
