@@ -1,0 +1,29 @@
+DFTB options:
+  Max SCC iterations: 200
+  SCC calculation: true
+  Slater-Koster parameters: 3ob
+Follow-up calculation: false
+Initial guess:
+  Charge: 0
+  Multiplicity: 1
+  Use old charges: false
+Molecular structure:
+  Structure file: initial_structure.xyz
+  Use old structure: false
+Results from old calculation: old_calc.tar.xz
+Type of calculation:
+  Initial temperature [K]: 300
+  MD-Initial temperature [K]: 300
+  MD-Steps: 1000
+  MD-Thermostat: None
+  'MD-Time-Step [fs] ': 0.5
+  ML-Model: Model.tar
+  ML-Symmetry functions file: Symmetryfile
+  Max optimization cycles: 500
+  Method: Single shot calculation
+  Model: Model.tar
+  Optimisation algorithm: ConjugateGradient
+  Steps: 1000
+  Symmetry functions file: Symmetryfile
+  Thermostat: None
+  'Time-Step [fs] ': 0.5
