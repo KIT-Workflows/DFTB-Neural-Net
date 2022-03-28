@@ -1,9 +1,0 @@
-Activation function: tanh
-Cut-off distance: 5.0
-Energies: data_energy
-Geometries: geometry
-Hidden Layers: 3
-Learning rate: 5.0e-05
-Neurons: 15
-Ref-Energy-DFT: ref_dft
-Ref-Energy-DFTB: ref_dftb
