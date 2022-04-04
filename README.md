@@ -18,3 +18,4 @@ Install via pip ordered-enum
 7. cmake --build \_build -- -j
 8. ./utils/get_opt_externals slakos
 9. pushd \_build; ctest -j; popd
+10. cmake --install _build
