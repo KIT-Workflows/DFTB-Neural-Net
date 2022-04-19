@@ -9,7 +9,7 @@ conda create -n NAME python=3.6 numpy scikit-learn tensorflow-gpu keras cython p
 Install via pip ordered-enum
 
 # Installing DFTB+ in int-nano
-1. git clone -b machine-learning https://github.com/tomaskubar/dftbplus.git (check this)
+1. git clone -b machine-learning https://github.com/tomaskubar/dftbplus.git 
 2. cd dftbplus
 3. git checkout e149ec0e8a1ca7ea0401d5f30f2245fc4a0a1d50
 4. module load intel/19.0.5.281
