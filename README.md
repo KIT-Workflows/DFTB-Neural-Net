@@ -17,9 +17,6 @@ Install via pip ordered-enum
 7. FC=gfortran CC=gcc cmake -DCMAKE_INSTALL_PREFIX=$HOME/opt/dftb+ -B _build .
 8. cmake --build _build -- -j 
 9. cmake --install _build
-10. Check if the `dftb+` executable exist in the dftbplus/\_build/prog/dftb+/ folder. If so, then everything is okay. 
-
-```diff
-+ this text is highlighted in green
-- this text is highlighted in red
+```diff 
++ Check if the `dftb+` executable exist in the dftbplus/\_build/prog/dftb+/ folder. If so, then everything is okay.
 ```
