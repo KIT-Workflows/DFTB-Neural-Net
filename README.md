@@ -1,5 +1,7 @@
 # DFTB-Neural-Net
 
+<font color='red'>test blue color font</font>
+
 Install conda environment, the following packages would be needed:
 
 ```
@@ -11,13 +13,11 @@ Install via pip ordered-enum
 # Installing DFTB+ in int-nano
 1. git clone -b machine-learning https://github.com/tomaskubar/dftbplus.git 
 2. cd dftbplus
-3. git checkout e149ec0e8a1ca7ea0401d5f30f2245fc4a0a1d50
-4. module load intel/19.0.5.281
+3. module load gnu7/7.3.0
+4. module load openblas/0.2.20
 5. module load cmake
-6. export  INTEL_LICENSE_FILE=(ask for this info)
-7. mkdir _build 
-8. cd _build
-9. ccmake -DCMAKE_Fortran_COMPILER=ifort -DCMAKE_C_COMPILER=icc -DBUILD_EXPORTED_TARGETS_ONLY=True -DCMAKE_TOOLCHAIN_FILE=../sys/intel.cmake ..
-10. Note: While inside the ccmake interactive change the installation directory to the same level of _build
-11. make 
-12. make install 
+6. mkdir _build 
+7. FC=gfortran CC=gcc cmake -DCMAKE_INSTALL_PREFIX=$HOME/opt/dftb+ -B _build .
+8. cmake --build _build -- -j 
+9. cmake --install _build
+10. Check if the `+ dftb+` executable exist in the dftbplus/\_build/prog/dftb+/ folder. If so, then everything is okay. 
