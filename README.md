@@ -18,5 +18,8 @@ Install via pip ordered-enum
 8. cmake --build _build -- -j 
 9. cmake --install _build
 ```diff 
-+ Check if the `dftb+` executable exist in the dftbplus/_build/prog/dftb+/ folder. If so, then everything is okay. be cautious with conda env
++ Check if the `dftb+` executable exist in the dftbplus/_build/prog/dftb+/ folder. If so, then everything is okay. 
+```
+```diff 
+be cautious with conda env.
 ```
