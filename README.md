@@ -23,5 +23,5 @@ Install via pip ordered-enum
 ```
 
 ```diff 
-+ be cautious with conda env.
++ be cautious with conda env., it must have libgfortran5 if the installation wants to be done inside the conda environment
 ```
