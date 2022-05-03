@@ -20,6 +20,7 @@ Install via pip ordered-enum
 ```diff 
 + Check if the `dftb+` executable exist in the dftbplus/_build/prog/dftb+/ folder. If so, then everything is okay. 
 ```
+
 ```diff 
-be cautious with conda env.
++ be cautious with conda env.
 ```
