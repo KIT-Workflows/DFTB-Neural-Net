@@ -9,7 +9,7 @@
   - 32000
 - - True
   - Time [Wall]
-  - 3600
+  - 30000000
 - - True
   - Queue
   - batch

@@ -4,10 +4,10 @@ Geometry = xyzFormat {
 
 Hamiltonian = DFTB {
   Scc = Yes
-  MaxSCCIterations = 50
+  MaxSCCIterations = 100
   Mixer = Broyden {}
-  ReadInitialCharges = No
-  Charge = 0.000000
+  ReadInitialCharges = Yes
+  Charge = -1.000000
   SlaterKosterFiles = Type2FileNames {
     Prefix = "/home/ws/gt5111/DFTB+/dftbplus/external/slakos/origin/3ob-3-1/"
     Separator = "-"
@@ -15,8 +15,59 @@ Hamiltonian = DFTB {
     LowerCaseTypeName = No
   }
   MaxAngularMomentum {
-    H = "s"
     C = "p"
+    S = "d"
+    H = "s"
+  }
+  MachineLearning = NeuralNet {
+     SymmetryFunctions {
+     Neighboursearching = Yes
+     AtomicNumber = {
+    C = 6
+    S = 16
+    H = 1
+  }
+RadialCutoff = 10  
+RadialParameters {  
+0.2 3124.9999999999986  
+0.6363636363636364 308.67346938775506  
+1.0727272727272728 108.62539500143635  
+1.509090909090909 54.88822760923211  
+1.9454545454545453 33.02690191283081  
+2.381818181818182 22.03397237923198  
+2.8181818181818183 15.738813735691982  
+3.2545454545454544 11.801285852501485  
+3.690909090909091 9.175786842679996  
+4.127272727272727 7.3381008752353045  
+4.5636363636363635 6.001888858907002  
+5.0 5.0  
+}  
+AngularCutoff = 5  
+AngularParameters {  
+0.001 1.0 -1.0  
+0.001 1.0 1.0  
+0.001 4.0 -1.0  
+0.001 4.0 1.0  
+0.001 16.0 -1.0  
+0.001 16.0 1.0  
+0.01 1.0 -1.0  
+0.01 1.0 1.0  
+0.01 4.0 -1.0  
+0.01 4.0 1.0  
+0.01 16.0 -1.0  
+0.01 16.0 1.0  
+0.05 1.0 -1.0  
+0.05 1.0 1.0  
+0.05 4.0 -1.0  
+0.05 4.0 1.0  
+0.05 16.0 -1.0  
+0.05 16.0 1.0  
+}
+  }
+ NeuralNetworkFiles = Type2Filenames {
+    Prefix = "Model/"
+    Suffix = "-subnet.param"
+  }
   }
 }
 

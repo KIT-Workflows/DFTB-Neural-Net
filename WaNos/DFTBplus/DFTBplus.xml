@@ -10,7 +10,7 @@
 			This WaNo performs a DFTB calculation using the DFTB+e code. Here all 
 			the inputs files might be automatically generated or loaded.
  		</Description>
- 		<Keyword>DFTB</Keyword>
+ 		<Keyword>DFT</Keyword>
 	</WaNoMeta>
 
 	<WaNoRoot name="DFTB+">
@@ -20,10 +20,7 @@
 
 	    	<WaNoDictBox name="Molecular structure">
 			<WaNoBool visibility_condition="%s == True" visibility_var_path="Follow-up calculation" name="Use old structure">False</WaNoBool>
-			<WaNoFile visibility_condition="%s == False" visibility_var_path="Molecular structure.Use old structure" logical_filename="initial_structure.xyz" name="Structure file">C:\Users\claud\Desktop\S1_reference.xyz</WaNoFile>
-			<WaNoBool name="Import KORINGA">False</WaNoBool>
-            <WaNoFile logical_filename="KORINGA.yml" visibility_condition="%s == True"
-            visibility_var_path="Molecular structure.Import KORINGA" name="KORINGA_file">KORINGA path file</WaNoFile>
+			<WaNoFile visibility_condition="%s == False" visibility_var_path="Molecular structure.Use old structure" logical_filename="initial_structure.xyz" name="Structure file"> Structure in .xyz format</WaNoFile>
             	</WaNoDictBox>
 	
             	<WaNoDictBox name="Initial guess">
@@ -41,45 +38,62 @@
                 		<Entry id="1">mio</Entry>
 	        	</WaNoDropDown>
             	</WaNoDictBox>
-            
-		<WaNoDictBox name="Type of calculation">
-			<WaNoBool name="Structure optimisation">True</WaNoBool>
-			<WaNoDropDown visibility_condition='%s == True' visibility_var_path='Type of calculation.Structure optimisation' name="Optimisation algorithm">
-				<Entry id="0">SteepestDescent</Entry>
-				<Entry id="1" chosen="True">ConjugateGradient</Entry>
-				<Entry id="2">gDIIS</Entry>
-			</WaNoDropDown>
-			<WaNoInt visibility_condition='%s == True' visibility_var_path='Type of calculation.Structure optimisation' name="Max optimization cycles">5000</WaNoInt>
-	    	</WaNoDictBox>
 
+				<WaNoDictBox name="Type of calculation">
 
-		<WaNoDictBox name="Molecular Dynamics">
-			<WaNoBool name="Molecular Dynamics">False</WaNoBool>
-			<WaNoFloat visibility_condition="%s == True" visibility_var_path="Molecular Dynamics.Molecular Dynamics" name='TimeStep [fs] '>0.5</WaNoFloat>
-			<WaNoInt visibility_condition="%s == True" visibility_var_path="Molecular Dynamics.Molecular Dynamics" name='Steps'>1000</WaNoInt>
-			<WaNoInt visibility_condition="%s == True" visibility_var_path="Molecular Dynamics.Molecular Dynamics" name='Initial temperature'>300</WaNoInt>
-			<WaNoDropDown visibility_condition='%s == True' visibility_var_path='Molecular Dynamics.Molecular Dynamics' name="Thermostat">
-				<Entry id="0" chosen="True">None</Entry>
-				<Entry id="1">Berendsen</Entry>
-				<Entry id="2">Andersen</Entry>
-				<Entry id="3">NoseHoover</Entry>
-			</WaNoDropDown>
-	    	</WaNoDictBox>
+					<WaNoDropDown name="Method" description = "Code and its respective method">
+						<Entry id="0" chosen="true">Single shot calculation</Entry>
+						<Entry id="1">Structure optimisation</Entry>
+						<Entry id="2">Molecular Dynamics</Entry>
+						<Entry id="3">Machine Learning</Entry>
+						<Entry id="4">MD-Machine Learning</Entry>
+					</WaNoDropDown>
 
-		<WaNoDictBox name="Machine Learning">
-			<WaNoBool name="Machine Learning">False</WaNoBool>
-			<WaNoFile visibility_condition="%s == True" visibility_var_path="Machine Learning.Machine Learning" 
-			logical_filename="Symmetryfile.param" name="Symmetry functions file">C:\Users\claud\Documents\CN\Testing\DFTBplus\symFunc_all.param</WaNoFile>
-			<WaNoFile visibility_condition="%s == True" visibility_var_path="Machine Learning.Machine Learning" 
-			logical_filename="Model.tar" name="Model">C:\Users\claud\Documents\CN\Testing\DFTBplus\Model.tar</WaNoFile>
+					<WaNoDropDown visibility_condition="'%s' == 'Structure optimisation'" visibility_var_path="Type of calculation.Method" name="Optimisation algorithm">
+						<Entry id="0">SteepestDescent</Entry>
+						<Entry id="1" chosen="True">ConjugateGradient</Entry>
+						<Entry id="2">gDIIS</Entry>
+					</WaNoDropDown>
+					<WaNoInt visibility_condition="'%s' == 'Structure optimisation'" visibility_var_path="Type of calculation.Method" name="Max optimization cycles">500</WaNoInt>
+					
+					<WaNoFile visibility_condition="'%s' == 'Machine Learning'" visibility_var_path="Type of calculation.Method" 
+					logical_filename="Symmetryfile" name="Symmetry functions file">C:\Users\claud\Documents\CN\Testing\DFTBplus\symFunc_all.param</WaNoFile>
+					<WaNoFile visibility_condition="'%s' == 'Machine Learning'" visibility_var_path="Type of calculation.Method" 
+					logical_filename="Model.tar" name="Model">C:\Users\claud\Documents\CN\Testing\DFTBplus\Model.tar</WaNoFile>
+
+					<WaNoFloat visibility_condition="'%s' == 'Molecular Dynamics'" visibility_var_path="Type of calculation.Method" name='Time-Step fs'>0.5</WaNoFloat>
+					<WaNoInt visibility_condition="'%s' == 'Molecular Dynamics'" visibility_var_path="Type of calculation.Method" name='Steps'>1000</WaNoInt>
+					<WaNoInt visibility_condition="'%s' == 'Molecular Dynamics'" visibility_var_path="Type of calculation.Method" name='Initial temperature K'>300</WaNoInt>
+					<WaNoDropDown visibility_condition="'%s' == 'Molecular Dynamics'" visibility_var_path="Type of calculation.Method" name="Thermostat">
+						<Entry id="0" chosen="True">None</Entry>
+						<Entry id="1">Berendsen</Entry>
+						<Entry id="2">Andersen</Entry>
+						<Entry id="3">NoseHoover</Entry>
+					</WaNoDropDown>
+
+					<WaNoFile visibility_condition="'%s' == 'MD-Machine Learning'" visibility_var_path="Type of calculation.Method" 
+					logical_filename="Symmetryfile" name="ML-Symmetry functions file">C:\Users\claud\Documents\CN\Testing\DFTBplus\symFunc_all.param</WaNoFile>
+					<WaNoFile visibility_condition="'%s' == 'MD-Machine Learning'" visibility_var_path="Type of calculation.Method" 
+					logical_filename="Model.tar" name="ML-Model">C:\Users\claud\Documents\CN\Testing\DFTBplus\Model.tar</WaNoFile>
+
+					<WaNoFloat visibility_condition="'%s' == 'MD-Machine Learning'" visibility_var_path="Type of calculation.Method" name='MD-Time-Step fs'>0.5</WaNoFloat>
+					<WaNoInt visibility_condition="'%s' == 'MD-Machine Learning'" visibility_var_path="Type of calculation.Method" name='MD-Steps'>1000</WaNoInt>
+					<WaNoInt visibility_condition="'%s' == 'MD-Machine Learning'" visibility_var_path="Type of calculation.Method" name='MD-Initial temperature K'>300</WaNoInt>
+					<WaNoDropDown visibility_condition="'%s' == 'MD-Machine Learning'" visibility_var_path="Type of calculation.Method" name="MD-Thermostat">
+						<Entry id="0" chosen="True">None</Entry>
+						<Entry id="1">Berendsen</Entry>
+						<Entry id="2">Andersen</Entry>
+						<Entry id="3">NoseHoover</Entry>
+					</WaNoDropDown>
+
 			</WaNoDictBox>
-			
+
     </WaNoRoot>
 
     <WaNoExecCommand>
-		source  ~/anaconda3/etc/profile.d/conda.sh
-		conda activate dftb-nn
-		bash ./dftb+.sh
+	source /home/ws/gt5111/miniconda3/etc/profile.d/conda.sh
+	conda activate
+	bash ./dftb+.sh
 	</WaNoExecCommand>
 
     <WaNoInputFiles>
