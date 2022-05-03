@@ -49,7 +49,7 @@ def write_input(settings,struct_file):
 
     dftb_in += "  SlaterKosterFiles = Type2FileNames {\n"
     ## hard coded location of skf-files on int-nano with dftb+ in qn0453's home
-    dftb_in += "    Prefix = \"/home/ws/gt5111/DFTB+/dftbplus/external/slakos/origin/%s/\"\n"%(sk_dict[settings['skf']])
+    dftb_in += "    Prefix = \"/home/ws/qs7669/Slatko/%s/\"\n"%(sk_dict[settings['skf']])
     dftb_in += "    Separator = \"-\"\n"
     dftb_in += "    Suffix = \".skf\"\n"
     dftb_in += "    LowerCaseTypeName = No\n"
@@ -58,6 +58,9 @@ def write_input(settings,struct_file):
     for element in list(dict.fromkeys(struct.get_chemical_symbols())):
         dftb_in += "    %s = \"%s\"\n"%(element,max_ang_mom[settings['skf']][element])
     dftb_in += "  }\n"
+
+    if settings["Simulation"] == "Single shot calculation":
+        dftb_in+="  }\n"
 
     if settings["Simulation"] == "Machine Learning":
         fname =  settings['Model']
@@ -81,10 +84,10 @@ def write_input(settings,struct_file):
         dftb_in+="    Suffix = \"-subnet.param\"\n"
         dftb_in+="  }\n"
         dftb_in+="  }\n"
-
-    dftb_in += "}\n\n"
+        dftb_in += "}\n\n"
 
     if settings["Simulation"] == "Structure optimisation":
+        dftb_in+='}\n\n'
         dftb_in += 'Driver = %s {\n'%(settings['opt driver'])
         dftb_in += '  MovedAtoms = 1:-1\n'
         dftb_in += '  MaxForceComponent = 1E-3\n'
@@ -92,11 +95,8 @@ def write_input(settings,struct_file):
         dftb_in += '  OutputPrefix = \"final_structure\"\n'
         dftb_in += '}\n\n'
 
-    dftb_in += "Options {}\n\n"
-    dftb_in += "Analysis {\n  CalculateForces = Yes\n}\n\n"
-    dftb_in += "ParserOptions {\n  ParserVersion = 7\n}\n"
-
     if settings["Simulation"] == "Molecular Dynamics":
+        dftb_in+='}\n\n'
         dftb_in+='Driver = VelocityVerlet{\n'
         dftb_in+='  TimeStep [fs] = %i\n'%(settings['TimeStep'])
         dftb_in+='  Thermostat = %s{\n'%(settings['Thermostat'])
@@ -106,18 +106,15 @@ def write_input(settings,struct_file):
         dftb_in+='  MovedAtoms = 1:-1\n'
         dftb_in+='  MDRestartFrequency = 100\n'
         dftb_in+='}\n\n'
+        
     
     if settings["Simulation"] == "MD-Machine Learning":
-        dftb_in+='Driver = VelocityVerlet{\n'
-        dftb_in+='  TimeStep [fs] = %i\n'%(settings['TimeStep'])
-        dftb_in+='  Thermostat = %s{\n'%(settings['Thermostat'])
-        dftb_in+='      InitialTemperature [Kelvin] = %i\n'%(settings['InitTemp'])
-        dftb_in+="  }\n"
-        dftb_in+='  Steps = %i\n'%(settings['MDsteps'])
-        dftb_in+='  MovedAtoms = 1:-1\n'
-        dftb_in+='  MDRestartFrequency = 100\n'
-        dftb_in+='}\n\n'
-    
+        fname =  settings['Model']
+        if fname.endswith("tar"):
+            tar = tarfile.open(fname)
+            tar.extractall()
+            tar.close()
+
         dftb_in+="  MachineLearning = NeuralNet {\n"
         dftb_in+="     SymmetryFunctions {\n"
         dftb_in+="     Neighboursearching = Yes\n"
@@ -133,6 +130,24 @@ def write_input(settings,struct_file):
         dftb_in+="    Suffix = \"-subnet.param\"\n"
         dftb_in+="  }\n"
         dftb_in+="  }\n"
+
+        dftb_in+="}\n\n"
+
+        dftb_in+='Driver = VelocityVerlet{\n'
+        dftb_in+='  TimeStep [fs] = %i\n'%(settings['TimeStep'])
+        dftb_in+='  Thermostat = %s{\n'%(settings['Thermostat'])
+        dftb_in+='      InitialTemperature [Kelvin] = %i\n'%(settings['InitTemp'])
+        dftb_in+="  }\n"
+        dftb_in+='  Steps = %i\n'%(settings['MDsteps'])
+        dftb_in+='  MovedAtoms = 1:-1\n'
+        dftb_in+='  MDRestartFrequency = 100\n'
+        dftb_in+='}\n\n'
+
+    
+
+    dftb_in += "Options {}\n\n"
+    dftb_in += "Analysis {\n  CalculateForces = Yes\n}\n\n"
+    dftb_in += "ParserOptions {\n  ParserVersion = 7\n}\n"
 
     with open('dftb_in.hsd','w') as outfile:
         outfile.write(dftb_in)
