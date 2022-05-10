@@ -15,13 +15,22 @@ if __name__ == '__main__':
     Charge = wano_file["Charge"]
     Multiplicity = wano_file["Multiplicity"]
 
-    calc = ORCA(label = 'orca',
-                maxiter = 0, 
-                orcasimpleinput = Functional + ' ' + Basis_set,
-                charge=Charge, mult=Multiplicity,
-                task='gradient',
-                orcablocks='%pal nprocs 1 end',
-                tolerance='VeryTight')
+    if wano_file["Functional"] == "DLPNO-CCSD(T)":
+        calc = ORCA(label = 'orca',
+                    maxiter = 0, 
+                    orcasimpleinput = Functional + ' ' + Basis_set + ' '+Basis_set+'/C',
+                    charge=Charge, mult=Multiplicity,
+                    task='gradient',
+                    orcablocks='%pal nprocs 1 end',
+                    tolerance='VeryTight')
+    else:
+        calc = ORCA(label = 'orca',
+            maxiter = 0, 
+            orcasimpleinput = Functional + ' ' + Basis_set,
+            charge=Charge, mult=Multiplicity,
+            task='gradient',
+            orcablocks='%pal nprocs 1 end',
+            tolerance='VeryTight')
 
     my_geo.calc = calc
 
