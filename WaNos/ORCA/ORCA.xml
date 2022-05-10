@@ -7,13 +7,12 @@
  		</Author>
 
 		<Description>
-   			This WaNo performs DFTB simulation using DFTB+ code, which is
+   			This WaNo performs ab initio simulations using ORCA code, which is
 			a fast and efficient versatile quantum mechanical
-			simulation method. In this WaNo, the SlaterKosterFiles
-			path should be specified in a single folder.
+			simulation method. 
  		</Description>
 
- 		<Keyword>DFTB+</Keyword>
+ 		<Keyword>ORCA</Keyword>
 	</WaNoMeta>
 	
 	<WaNoRoot name="ORCA">
@@ -39,9 +38,9 @@
 			<Entry id="16"> M06-2X </Entry>
 			<Entry id="17"> LC-BLYP </Entry>
 			<Entry id="18"> CAM-B3LYP </Entry>
-			<Entry id="19"> ωB97 </Entry>
-			<Entry id="20"> ωB97X </Entry>
-			<Entry id="21"> ωB97X-D3 </Entry>
+			<Entry id="19"> wB97 </Entry>
+			<Entry id="20"> wB97X </Entry>
+			<Entry id="21"> wB97X-D3 </Entry>
 			<Entry id="22"> DLPNO-CCSD(T) </Entry>
 		</WaNoDropDown>
 		<WaNoDropDown name="Basis-set">
@@ -67,7 +66,6 @@
 		</WaNoDropDown>
 		<WaNoInt name="Charge">0</WaNoInt>
 		<WaNoInt name="Multiplicity">1</WaNoInt>
-		<WaNoString name="var-name">tot_energy</WaNoString>
 	</WaNoRoot>
 	
 	<WaNoExecCommand>

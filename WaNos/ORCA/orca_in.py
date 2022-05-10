@@ -8,14 +8,12 @@ if __name__ == '__main__':
     with open('rendered_wano.yml') as file:
         wano_file = yaml.full_load(file)
     
-    my_geo = io.read('geometry',format = 'xyz')
-    label = wano_file["label"]
+    my_geo = io.read("geometry",format = 'xyz')
+    label = wano_file["Title"]
     Functional = wano_file["Functional"]
     Basis_set = wano_file["Basis-set"]
     Charge = wano_file["Charge"]
     Multiplicity = wano_file["Multiplicity"]
-
-    #atoms = molecule('H2O')
 
     calc = ORCA(label = 'orca',
                 maxiter = 0, 
