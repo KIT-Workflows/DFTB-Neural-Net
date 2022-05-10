@@ -17,7 +17,8 @@
 
 		<WaNoBool name="Follow-up calculation">False</WaNoBool>
 		<WaNoFile visibility_condition="%s == True" visibility_var_path="Follow-up calculation" logical_filename="old_calc.tar.xz" name="Results from old calculation">results.tar.xz</WaNoFile>
-
+		<WaNoString visibility_condition="%s == False" visibility_var_path="Follow-up calculation" name="Title">Title</WaNoString>
+		
 	    	<WaNoDictBox name="Molecular structure">
 			<WaNoBool visibility_condition="%s == True" visibility_var_path="Follow-up calculation" name="Use old structure">False</WaNoBool>
 			<WaNoFile visibility_condition="%s == False" visibility_var_path="Molecular structure.Use old structure" logical_filename="initial_structure.xyz" name="Structure file"> Structure in .xyz format</WaNoFile>
@@ -36,7 +37,14 @@
         	       	<WaNoDropDown name="Slater-Koster parameters">
                 		<Entry id="0" chosen="True">3ob</Entry>
                 		<Entry id="1">mio</Entry>
-	        	</WaNoDropDown>
+	        		</WaNoDropDown>
+					
+					<WaNoDropDown name="Dispersion" description="Dispersion corrections (van der Waals interactions)">
+						<Entry id="0" chosen="True">none</Entry>
+						<Entry id="1" >D3</Entry>
+						<Entry id="2" >LennardJones</Entry>
+					</WaNoDropDown>
+
             	</WaNoDictBox>
 
 				<WaNoDictBox name="Type of calculation">

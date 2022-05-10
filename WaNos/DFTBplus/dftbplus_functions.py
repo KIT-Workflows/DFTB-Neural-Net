@@ -49,7 +49,7 @@ def write_input(settings,struct_file):
 
     dftb_in += "  SlaterKosterFiles = Type2FileNames {\n"
     ## hard coded location of skf-files on int-nano with dftb+ in qn0453's home
-    dftb_in += "    Prefix = \"/home/ws/qs7669/Slatko/%s/\"\n"%(sk_dict[settings['skf']])
+    dftb_in += "    Prefix = \"/home/ws/gt5111/DFTB+/dftbplus/external/slakos/origin/%s/\"\n"%(sk_dict[settings['skf']])
     dftb_in += "    Separator = \"-\"\n"
     dftb_in += "    Suffix = \".skf\"\n"
     dftb_in += "    LowerCaseTypeName = No\n"
@@ -58,6 +58,18 @@ def write_input(settings,struct_file):
     for element in list(dict.fromkeys(struct.get_chemical_symbols())):
         dftb_in += "    %s = \"%s\"\n"%(element,max_ang_mom[settings['skf']][element])
     dftb_in += "  }\n"
+
+    if settings['disp'] == "D3":
+        dftb_in+= "    Dispersion = SimpleDftD3 {\n"
+        dftb_in+= "    a1 = 0.5719\n"
+        dftb_in+= "     a2 = 3.6017\n"
+        dftb_in+= "     s6 = 1.0\n"
+        dftb_in+= "     s8 = 0.5883\n"
+        dftb_in+= "     }\n\n"
+    elif settings['disp'] == "LennardJones":
+        dftb_in+= "Dispersion = LennardJones {\n"
+        dftb_in+= "Parameters = UFFParameters {}\n"
+        dftb_in+=  "              }\n\n"
 
     if settings["Simulation"] == "Single shot calculation":
         dftb_in+="  }\n"
@@ -151,6 +163,9 @@ def write_input(settings,struct_file):
 
     with open('dftb_in.hsd','w') as outfile:
         outfile.write(dftb_in)
+
+
+
 
 
 

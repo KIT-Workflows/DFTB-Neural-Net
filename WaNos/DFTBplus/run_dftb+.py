@@ -17,7 +17,7 @@ def get_settings_from_rendered_wano():
         opt_options = False
     else:
         opt_options = True
-
+    settings['title'] =wano_file['Title']
     settings['follow-up'] = wano_file['Follow-up calculation']
     settings['use old struct'] = wano_file['Molecular structure']['Use old structure']
     settings['use old charges'] = wano_file['Initial guess']['Use old charges']
@@ -31,6 +31,7 @@ def get_settings_from_rendered_wano():
     settings['opt cyc'] = 100
     settings['opt driver'] = wano_file['Type of calculation']['Optimisation algorithm']
     settings['max opt cyc'] = wano_file['Type of calculation']['Max optimization cycles']
+    settings['disp'] = wano_file['DFTB options']['Dispersion']
 
     settings['Simulation'] = wano_file['Type of calculation']['Method']
     settings['Functions']=wano_file['Type of calculation']['Symmetry functions file']
@@ -118,6 +119,7 @@ if __name__ == '__main__':
 
     results_dict = {}
     results_dict['energy_unit'] = 'Hartree'
+    results_dict['title'] = settings['title']
     with open('detailed.out') as infile:
         for line in infile.readlines():
             if line.startswith('Total energy'):
