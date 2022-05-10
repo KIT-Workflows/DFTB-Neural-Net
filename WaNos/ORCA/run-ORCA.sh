@@ -11,5 +11,5 @@ module spider gnu8/8.3.0
 module spider intel/19.0.5.281
 module spider mpich/3.3.1
 export  INTEL_LICENSE_FILE=28518@scclic1.scc.kit.edu
-orca orca.inp > orca.out
+orca *.inp > orca.out
 

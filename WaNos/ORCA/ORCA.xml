@@ -69,9 +69,9 @@
 	</WaNoRoot>
 	
 	<WaNoExecCommand>
-		source  ~/anaconda3/etc/profile.d/conda.sh
-		conda activate dftb-nn
-		python orca_in.py
+		export NANOVER=V4
+		source $NANOMATCH/$NANOVER/local_anaconda/bin/activate
+		conda activate simstack_kit
 
 		chmod +x run-ORCA.sh
 		bash run-ORCA.sh
