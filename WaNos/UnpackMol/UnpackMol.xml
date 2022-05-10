@@ -30,7 +30,6 @@
   
     <WaNoInputFiles>
       <WaNoInputFile logical_filename="unpackmol.py">unpackmol.py</WaNoInputFile>
-      <WaNoInputFile logical_filename="input-dict.yml">input-dict.yml</WaNoInputFile>
     </WaNoInputFiles>   
     
     <WaNoOutputFiles>
