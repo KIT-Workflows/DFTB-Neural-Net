@@ -18,7 +18,7 @@
 	
 	<WaNoRoot name="ORCA">
 		<WaNoFile logical_filename="geometry" name="Geometry-file">file.xyz</WaNoFile>
-		<WaNoString name="label">test</WaNoString>
+		<WaNoString name="Title">test</WaNoString>
 		<WaNoDropDown name="Functional">
 			<Entry id="0"> BLYP </Entry>
 			<Entry id="1"> BP86 </Entry>
@@ -68,9 +68,6 @@
 		<WaNoInt name="Charge">0</WaNoInt>
 		<WaNoInt name="Multiplicity">1</WaNoInt>
 		<WaNoString name="var-name">tot_energy</WaNoString>
-
-		<WaNoBool name="Import KORINGA">False</WaNoBool>
-        <WaNoFile logical_filename="KORINGA.yml" visibility_condition="%s == True" visibility_var_path="Import KORINGA" name="KORINGA_file">KORINGA path file</WaNoFile>
 	</WaNoRoot>
 	
 	<WaNoExecCommand>
