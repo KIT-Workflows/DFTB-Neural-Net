@@ -26,7 +26,7 @@
 			<Entry id="4"> TPSS </Entry>
 			<Entry id="5"> revTPSS </Entry>
 			<Entry id="6"> M06-L </Entry>
-			<Entry id="7" chosen="True"> B3LYP </Entry>
+			<Entry id="7"> B3LYP </Entry>
 			<Entry id="8"> B3LYP/G </Entry>
 			<Entry id="9"> BHLYP </Entry>
 			<Entry id="10"> PBE0 </Entry>
@@ -41,28 +41,28 @@
 			<Entry id="19"> wB97 </Entry>
 			<Entry id="20"> wB97X </Entry>
 			<Entry id="21"> wB97X-D3 </Entry>
-			<Entry id="22"> DLPNO-CCSD(T) </Entry>
+			<Entry id="22" chosen="True">DLPNO-CCSD(T)</Entry>
 		</WaNoDropDown>
 		<WaNoDropDown name="Basis-set">
-			<Entry id="0"> def2-SV(P) </Entry>
-			<Entry id="1"> def2-SVP </Entry>
-			<Entry id="2">  def2-TZVP(-f) </Entry>
-			<Entry id="3" chosen="True"> def2-TZVP </Entry>
-			<Entry id="4"> def2-TZVPP </Entry>
-			<Entry id="5"> def2-QZVP </Entry>
-			<Entry id="6"> def2-QZVPP </Entry>
-			<Entry id="7"> ma-def2-SVP </Entry>
-			<Entry id="8"> ma-def2-TZVP </Entry>
-			<Entry id="9"> ma-def2-TZVPP </Entry>
-			<Entry id="10"> ma-def2-QZVPP </Entry>
-			<Entry id="11"> cc-pVDZ </Entry>
-			<Entry id="12"> cc-pVTZ </Entry>
-			<Entry id="13"> cc-pVQZ </Entry>
-			<Entry id="14"> cc-pV5Z </Entry>
-			<Entry id="15"> aug-cc-pVDZ </Entry>
-			<Entry id="16"> aug-cc-pVTZ </Entry>
-			<Entry id="17"> aug-cc-pVQZ </Entry>
-			<Entry id="18"> aug-cc-pV5Z </Entry>
+			<Entry id="0">def2-SV(P)</Entry>
+			<Entry id="1">def2-SVP</Entry>
+			<Entry id="2">def2-TZVP(-f)</Entry>
+			<Entry id="3" chosen="True">def2-TZVP</Entry>
+			<Entry id="4">def2-TZVPP</Entry>
+			<Entry id="5">def2-QZVP</Entry>
+			<Entry id="6">def2-QZVPP</Entry>
+			<Entry id="7">ma-def2-SVP</Entry>
+			<Entry id="8">ma-def2-TZVP</Entry>
+			<Entry id="9">ma-def2-TZVPP</Entry>
+			<Entry id="10">ma-def2-QZVPP</Entry>
+			<Entry id="11">cc-pVDZ</Entry>
+			<Entry id="12">cc-pVTZ</Entry>
+			<Entry id="13">cc-pVQZ</Entry>
+			<Entry id="14">cc-pV5Z</Entry>
+			<Entry id="15">aug-cc-pVDZ</Entry>
+			<Entry id="16">aug-cc-pVTZ</Entry>
+			<Entry id="17">aug-cc-pVQZ</Entry>
+			<Entry id="18">aug-cc-pV5Z</Entry>
 		</WaNoDropDown>
 		<WaNoInt name="Charge">0</WaNoInt>
 		<WaNoInt name="Multiplicity">1</WaNoInt>
