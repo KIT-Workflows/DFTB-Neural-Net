@@ -33,7 +33,7 @@ if __name__ == '__main__':
     
     results_dict = {}
     results_dict["orca_energy"] = write_energy(outfile)
-    results_dict["title"]= name
+    results_dict["orca_title"]= name
     results_dict["orca_units"]= write_units(outfile)
     with open("orca_results.yml",'w') as out:
         yaml.dump(results_dict, out,default_flow_style=False)

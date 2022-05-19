@@ -119,7 +119,7 @@ if __name__ == '__main__':
 
     results_dict = {}
     results_dict['energy_unit'] = 'Hartree'
-    results_dict['title'] = settings['title']
+    results_dict['dftb_title'] = settings['title']
     with open('detailed.out') as infile:
         for line in infile.readlines():
             if line.startswith('Total energy'):

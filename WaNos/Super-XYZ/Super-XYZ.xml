@@ -16,11 +16,13 @@
 <WaNoRoot name="Super-XYZ">  
   <WaNoFile logical_filename="Molecules.tar.xz"  name = "Molecules">Molecules.tar.xz</WaNoFile>
   <WaNoFile logical_filename="Table-var.csv"  name = "Table energy">Table-var.csv</WaNoFile>
+  <WaNoFile logical_filename="input-dict.yml"  name = "Structure-names">input-dict.yml</WaNoFile>
 </WaNoRoot>
 
   <WaNoExecCommand>
-		source  /home/ws/qs7669/anaconda3/etc/profile.d/conda.sh
-		conda activate dftb-nn
+    export NANOVER=V4
+    source $NANOMATCH/$NANOVER/local_anaconda/bin/activate
+    conda activate simstack_kit
     python append_xyz.py
   </WaNoExecCommand>
   
