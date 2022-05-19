@@ -30,7 +30,8 @@ if __name__ == '__main__':
 
     f = pd.read_csv(energies)
     if f['orca_title'].equals(f['dftb_title']):
-        f.to_csv('rearranged-table.csv')    
+        f.to_csv('rearranged-table.csv')
+        f=rearranged_table
     else:
         dftb = pd.concat([f["dftb_energy"], f["dftb_title"]], axis=1)
         orca = pd.concat([f["orca_energy"], f["orca_title"]], axis=1)
