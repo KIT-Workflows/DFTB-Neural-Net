@@ -1,0 +1,12 @@
+- - True
+  - CPUs per Node
+  - 12
+- - True
+  - Number of Nodes
+  - 1
+- - True
+  - Memory [MB]
+  - 24000
+- - True
+  - Time [Wall]
+  - 86400

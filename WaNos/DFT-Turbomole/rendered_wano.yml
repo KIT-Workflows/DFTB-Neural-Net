@@ -1,0 +1,21 @@
+Basis set:
+  Basis set type: def-SV(P)
+DFT options:
+  Integration grid: m3
+  Memory for RI: 2000
+  Functional: b3-lyp
+  vdW Correction: None 
+  Use RI: true
+Initial guess:
+  Charge: 0
+  Multiplicity: 1
+Molecular structure:
+  Internal coordinates: false
+  Structure file: initial_structure
+Type of calculation:
+  Structure optimisation: false
+  Excited states calculation: false
+  TDDFT options:
+    Type of excites states: Singlet
+    Number of excited states: 5
+    Optimised state: 1
