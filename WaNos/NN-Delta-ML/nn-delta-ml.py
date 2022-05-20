@@ -148,7 +148,7 @@ if __name__ == '__main__':
     cutoff_ang = math.radians(max(all_ang))
     lambd_array = np.array([-1, 1])
     #zeta_array = np.array([1, 4, 16])
-    zeta_array = np.array([math.radians(sum(all_ang)/len(all_ang)),3])
+    zeta_array = np.array([4,16])
     #eta_ang_array = np.array([0.001, 0.01, 0.05])
     eta_ang_array = np.array([0.001,math.radians(min(all_ang)),1])
         
