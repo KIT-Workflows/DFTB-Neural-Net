@@ -118,6 +118,7 @@ if __name__ == '__main__':
     else: os.rename(struct_0_file,'final_structure.xyz')
 
     results_dict = {}
+    results_dict['Slatko'] = settings['skf']
     results_dict['energy_unit'] = 'Hartree'
     results_dict['dftb_title'] = settings['title']
     with open('detailed.out') as infile:

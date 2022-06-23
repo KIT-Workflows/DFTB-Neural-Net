@@ -29,7 +29,8 @@ def write_input(settings,struct_file):
     max_ang_mom = {}
     max_ang_mom['3ob'] = {"Br":"d","C":"p","Ca":"p","Cl":"d","F":"p","H":"s","I":"d","K":"p","Mg":"p","N":"p","Na":"p","O":"p","P":"d","S":"d","Zn":"d"}
     max_ang_mom['mio'] = {"C":"p","H":"s","N":"p","O":"p","P":"p","S":"p"}
-
+    Hubbard = {}
+    Hubbard['3ob'] = {"Br":-0.0573,"C":-0.1492,"Ca":-0.0340,"Cl":-0.0697,"F" :-0.1623,"H" :-0.1857,"I" :-0.0433,"K" :-0.0339,"Mg" :-0.02,"N" :-0.1535,"Na" :-0.0454,"O" :-0.1575,"P" :-0.14,"S" :-0.11,"Zn" :-0.03}
 
     dftb_in = ""
     dftb_in += "Geometry = xyzFormat {\n  <<< \"%s\"\n}\n\n"%(struct_file)
@@ -42,14 +43,19 @@ def write_input(settings,struct_file):
         dftb_in += "  ReadInitialCharges = %s\n"%(bool2yn[settings['use old charges']])
     dftb_in += "  Charge = %f\n"%(float(settings['charge']))
 
-    #if settings['multiplicity'] > 1:
-    #    dftb_in+="  SpinPolarisation = Colinear {\n"
-    #    dftb_in+="    UnpairedElectrons = %f\n"%(float(settings['multiplicity']-1))
-    #    dftb_in+="  }\n"
+    if settings['third']:
+        dftb_in += "  HCorrection = Damping {\n"
+        dftb_in += "  Exponent = 4\n"
+        dftb_in += "  }\n"
+        dftb_in += "  ThirdOrder = Yes\n"
+        dftb_in += "  HubbardDerivs {\n" 
+        for element in list(dict.fromkeys(struct.get_chemical_symbols())):
+            dftb_in += "    %s = %s\n"%(element,Hubbard[settings['skf']][element])#add different charge mixers as options in the .xml file
+        dftb_in += "  }\n"
 
     dftb_in += "  SlaterKosterFiles = Type2FileNames {\n"
     ## hard coded location of skf-files on int-nano with dftb+ in qn0453's home
-    dftb_in += "    Prefix = \"/home/ws/gt5111/DFTB+/dftbplus/external/slakos/origin/%s/\"\n"%(sk_dict[settings['skf']])
+    dftb_in += "    Prefix = \"/home/ws/qs7669/Slatko/%s/\"\n"%(sk_dict[settings['skf']])
     dftb_in += "    Separator = \"-\"\n"
     dftb_in += "    Suffix = \".skf\"\n"
     dftb_in += "    LowerCaseTypeName = No\n"
@@ -110,11 +116,11 @@ def write_input(settings,struct_file):
     if settings["Simulation"] == "Molecular Dynamics":
         dftb_in+='}\n\n'
         dftb_in+='Driver = VelocityVerlet{\n'
-        dftb_in+='  TimeStep [fs] = %i\n'%(settings['TimeStep'])
+        dftb_in+='  TimeStep [fs] = %f\n'%(settings['TimeStep'])
         dftb_in+='  Thermostat = %s{\n'%(settings['Thermostat'])
         dftb_in+='      InitialTemperature [Kelvin] = %i\n'%(settings['InitTemp'])
         dftb_in+="  }\n"
-        dftb_in+='  Steps = %i\n'%(settings['MDsteps'])
+        dftb_in+='  Steps = %i\n'%(settings['Steps'])
         dftb_in+='  MovedAtoms = 1:-1\n'
         dftb_in+='  MDRestartFrequency = 100\n'
         dftb_in+='}\n\n'
@@ -146,7 +152,7 @@ def write_input(settings,struct_file):
         dftb_in+="}\n\n"
 
         dftb_in+='Driver = VelocityVerlet{\n'
-        dftb_in+='  TimeStep [fs] = %i\n'%(settings['TimeStep'])
+        dftb_in+='  TimeStep [fs] = %f\n'%(settings['MDTimeStep'])
         dftb_in+='  Thermostat = %s{\n'%(settings['Thermostat'])
         dftb_in+='      InitialTemperature [Kelvin] = %i\n'%(settings['InitTemp'])
         dftb_in+="  }\n"

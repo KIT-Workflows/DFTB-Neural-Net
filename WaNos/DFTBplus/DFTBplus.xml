@@ -34,6 +34,8 @@
 			<WaNoBool name="SCC calculation">True</WaNoBool>
 			<WaNoInt visibility_condition="%s == True" visibility_var_path="DFTB options.SCC calculation" name='Max SCC iterations'>200</WaNoInt>
 
+			<WaNoBool name="Third order">False</WaNoBool>
+			
         	       	<WaNoDropDown name="Slater-Koster parameters">
                 		<Entry id="0" chosen="True">3ob</Entry>
                 		<Entry id="1">mio</Entry>
