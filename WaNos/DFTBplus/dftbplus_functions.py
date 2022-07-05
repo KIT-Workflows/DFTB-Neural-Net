@@ -38,7 +38,7 @@ def write_input(settings,struct_file):
     dftb_in += "Hamiltonian = DFTB {\n"
     if settings['scc']:
         dftb_in += "  Scc = Yes\n"
-        dftb_in += "  MaxSCCIterations = %i\n"%(settings['scc iter'])
+        dftb_in += "  MaxSCCIterations = %i\n"%(settings['max scc iter'])
         dftb_in += "  Mixer = Broyden {}\n" #add different charge mixers as options in the .xml file
         dftb_in += "  ReadInitialCharges = %s\n"%(bool2yn[settings['use old charges']])
     dftb_in += "  Charge = %f\n"%(float(settings['charge']))

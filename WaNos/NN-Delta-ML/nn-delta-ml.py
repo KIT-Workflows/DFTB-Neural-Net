@@ -45,7 +45,8 @@ print(os.getcwd())
 
 from src.Calculator import src_nogrd                                                       
 from src.Calculator.src_nogrd import sym_func_show                                    
-from src.Calculator.src_nogrd import xyzArr_generator                                 
+from src.Calculator.src_nogrd import xyzArr_generator       
+from src.Calculator.src_nogrd import dictonary_elements                             
 from src.Calculator.src_nogrd import feat_scaling_func                                
 from src.Calculator.src_nogrd import at_idx_map_generator
 from src.Calculator.src_nogrd import at_idx_map_generator_old
@@ -70,6 +71,15 @@ def activations(temp_val):
 
     return var_1
 
+def get_elements(struct):
+    num=list(dict.fromkeys(struct.get_atomic_numbers()))
+    num.sort()
+    atomic_num=[f'{str(i)}' for i in num]
+    ELEMENTS=[]
+    for element in atomic_num:
+        ELEMENTS.append(dictonary_elements[element])
+    return ELEMENTS
+
 if __name__ == '__main__':
 
     with open("rendered_wano.yml") as file:
@@ -81,12 +91,6 @@ if __name__ == '__main__':
     layerss=wano_file['Hidden Layers']
     CO_distance=wano_file['Cut-off distance']
     lr=wano_file['Learning rate']
-
-
-    struct = io.read(geom_filename, format = "xyz")
-    elem = struct.get_chemical_symbols()
-    SUPPORTED_ELEMENTS = list(dict.fromkeys(elem))
-
 
     data_energy = wano_file['Energies'] 
     data_set = pd.read_csv(data_energy)
@@ -102,7 +106,7 @@ if __name__ == '__main__':
     data_set['Delta'] = (data_set['orca_energy'] - data_set['dftb_energy'] + ref_dftb['dftb_energy'].sum() - ref_orca['orca_energy'].sum())*627.5
 
         
-    md_train_arr_origin = read_scan_traj(filename=geom_filename)
+    md_train_arr_origin = read_scan_traj(filename=sys.path[0]+'/'+ geom_filename)
 
 
     md_train_arr = md_train_arr_origin.copy(deep=False).reset_index(drop=True)
@@ -120,12 +124,8 @@ if __name__ == '__main__':
 
     # Calculate distance dataframe from xyz coordinates
     distances = src_nogrd.distances_from_xyz(xyzArr, nAtoms)
-
-    at_idx_map_naive = at_idx_map_generator_old(md_train_arr[0])
-    ## Hotfix for atom ordering without touching at_idx_map_generator
-    at_idx_map_old = {el : at_idx_map_naive[el] for el in SUPPORTED_ELEMENTS}
-
-    at_idx_map = at_idx_map_generator(md_train_arr[0])
+    SUPPORTED_ELEMENTS=get_elements(md_train_arr[0])
+    at_idx_map = at_idx_map_generator_old(md_train_arr[0])
 
     lst=list(range(0, nAtoms))
     def find_tuples(lst, key, num=3):
@@ -147,10 +147,8 @@ if __name__ == '__main__':
     # angular symmetry function parameters
     cutoff_ang = math.radians(max(all_ang))
     lambd_array = np.array([-1, 1])
-    #zeta_array = np.array([1, 4, 16])
-    zeta_array = np.array([4,16])
-    #eta_ang_array = np.array([0.001, 0.01, 0.05])
-    eta_ang_array = np.array([0.001,math.radians(min(all_ang)),1])
+    zeta_array = np.array([1,4,16])
+    eta_ang_array = np.array([0.001, 0.01, 0.05])
         
     # Each of the element need to be parametrized for all of the list. 
     angList = np.array([e1+e2 for e1, e2 in comb_replace(SUPPORTED_ELEMENTS, 2)])
@@ -159,22 +157,16 @@ if __name__ == '__main__':
     ang_params = np.array([[eta, zeta, lambd, cutoff_ang] for eta in eta_ang_array for zeta in zeta_array for lambd in lambd_array])
 
     Gparam_dict = {}
-    for at_type in at_idx_map.keys():
+    for at_type in SUPPORTED_ELEMENTS:
         Gparam_dict[at_type] = {}
         Gparam_dict[at_type]['rad'] = {}
-        for at2_rad in at_idx_map.keys():
-            Gparam_dict[at_type]['rad'][at2_rad] = rad_params
+        for at2_rad in SUPPORTED_ELEMENTS:
+                Gparam_dict[at_type]['rad'][at2_rad] = rad_params
 
-    # This Section is already designed to be general
         Gparam_dict[at_type]['ang'] = {}
         for at23_ang in ang_comp[at_type]:
             Gparam_dict[at_type]['ang'][at23_ang] = ang_params
-    for at_type in Gparam_dict.keys():
-        print(Gparam_dict[at_type]['rad'].keys())
             
-
-    print(rad_params)
-    print(ang_params)
 
     path = "NN-parameter"
     rad_name = "symFunc_rad.param"
@@ -219,8 +211,9 @@ if __name__ == '__main__':
             all_f.write("}\n") 
 
     Gfunc_data = src_nogrd.symmetry_function(distances, at_idx_map, Gparam_dict)
+    print(SUPPORTED_ELEMENTS)
 
-    n_symm_func =Gfunc_data[SUPPORTED_ELEMENTS[0]][0][0].shape[0]
+    n_symm_func = Gfunc_data[SUPPORTED_ELEMENTS[0]][at_idx_map[SUPPORTED_ELEMENTS[0]][0]].shape[1]
     builder = netBuilder(SUPPORTED_ELEMENTS, n_symm_func)
     subnets = builder.build_subnets(n_dense_layers=layerss, n_units=neurons, 
                         hidden_activation=activations(act_funct),
@@ -323,9 +316,6 @@ if __name__ == '__main__':
 
 
     train_scaled, val_scaled, test_scaled = split_training_data(Gfunc_data, at_idx_map, train_idx, val_idx, test_idx)
-    print(test_scaled[SUPPORTED_ELEMENTS[0]][0].shape)
-    #Feat_train_scaled, Feat_val_scaled, Feat_test_scaled = split_training_data(Feat_data, at_idx_map, train_idx, val_idx, test_idx)
-    #print(Feat_train_scaled['H'][4].shape)
 
     inp_train = []
     inp_val   = []
@@ -408,7 +398,7 @@ if __name__ == '__main__':
     "ORCA_reference_energy":'%.5f kcal/mol'%((ref_orca['orca_energy'].sum())*627.5),
     "Neurons":neurons,
     "Layers":layerss,
-    "Elements":list(dict.fromkeys(elem)),
+    "Elements":SUPPORTED_ELEMENTS,
     "Number_of_symmetries":n_symm_func,
     "Activation_function":activations(act_funct)
     }
