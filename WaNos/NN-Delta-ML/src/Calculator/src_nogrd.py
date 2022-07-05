@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import yaml
+import re
 
 ##### IMPORT Atomic Simulation Environment Functions #####
 import ase
@@ -541,7 +542,7 @@ def angular_filter(Rij, Rik, Rjk, eta, zeta, lambd):
 # symmetry function calculates a matrix of all the G values. (G -> vector)
 # For all the atoms for a given input file.
 # Improvement: Separate the individual symmetry function section (so easy to code)
-def symmetry_function(distances, at_idx_map, Gparam_dict):
+def symmetry_function(distances, at_idx_map, Gparam_dict,SUPPORTED_ELEMENTS):
     """
     calculate symmetry functions from distances for the set of molecules
 
@@ -566,7 +567,7 @@ def symmetry_function(distances, at_idx_map, Gparam_dict):
 
     # This for loop goes through elements
     # Are together
-    for at_type in at_idx_map.keys():
+    for at_type in SUPPORTED_ELEMENTS:
         Gparam_rad = Gparam_dict[at_type]['rad']
         Gparam_ang = Gparam_dict[at_type]['ang']
 
@@ -606,22 +607,19 @@ def symmetry_function(distances, at_idx_map, Gparam_dict):
             # ======================
             # angular components
             for atAatB_type in Gparam_ang.keys():
+                atAB=re.findall('[A-Z][^A-Z]*', atAatB_type)
                 comp_count = Gparam_ang[atAatB_type].shape[0]
                 G_temp_component = np.zeros((Nsamples, comp_count))
-
-                # This for loop goes through all 'HH', 'HO' combo?
-                for count, values in enumerate(Gparam_ang[atAatB_type]):
-                    atA_list = at_idx_map[atAatB_type[0]][at_idx_map[atAatB_type[0]]!=at1]
+            for count, values in enumerate(Gparam_ang[atAatB_type]):
+                    atA_list = at_idx_map[atAB[0]][at_idx_map[atAB[0]]!=at1]
                     for atA in atA_list:
                         dist_1A = tuple(sorted([at1, atA]))
                         R1A_array = distances[dist_1A].values[:Nsamples]
-
-
-                        if atAatB_type[0] == atAatB_type[1]:
-                            atB_list = at_idx_map[atAatB_type[1]][(at_idx_map[atAatB_type[1]]!=at1) & (at_idx_map[atAatB_type[1]]>atA)]
+                        if atAB[0] == atAB[1]:
+                            atB_list = at_idx_map[atAB[1]][(at_idx_map[atAB[1]]!=at1) & (at_idx_map[atAB[1]]>atA)]
                         else:
-                            atB_list = at_idx_map[atAatB_type[1]][(at_idx_map[atAatB_type[1]]!=at1)]
-
+                            atB_list = at_idx_map[atAB[1]][(at_idx_map[atAB[1]]!=at1)]
+                        
                         for atB in atB_list:
                             dist_1B = tuple(sorted([at1, atB]))
                             dist_AB = tuple(sorted([atA, atB]))
@@ -632,18 +630,13 @@ def symmetry_function(distances, at_idx_map, Gparam_dict):
                                 import pdb; pdb.set_trace()
                             if np.any(RAB_array == 0):
                                 import pdb; pdb.set_trace();
-
-
                             ang_temp = angular_filter(R1A_array, R1B_array, RAB_array, values[0], values[1], values[2]) \
                                         * cutoff(values[3], R1A_array) * cutoff(values[3], R1B_array) * cutoff(values[3], RAB_array)
 
                             G_temp_component[:, count] += ang_temp
-
-                Gfunc_data[at_type][at1][:,G_temp_count:G_temp_count+comp_count] = G_temp_component
-                G_temp_count += comp_count
+            Gfunc_data[at_type][at1][:,G_temp_count:G_temp_count+comp_count] = G_temp_component
+            G_temp_count += comp_count
     return Gfunc_data
-
-
 
 
 

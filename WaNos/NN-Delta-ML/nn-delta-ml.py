@@ -68,8 +68,14 @@ def activations(temp_val):
         var_1="sigmoid"
     else:  
         var_1="relu"   
-
     return var_1
+
+def drop(temp_val):
+    if temp_val=="NoFirstDrop":   
+        var_2="NoFirstDrop"
+    else:  
+        var_2="NoDrop"   
+    return var_2
 
 def get_elements(struct):
     num=list(dict.fromkeys(struct.get_atomic_numbers()))
@@ -88,6 +94,7 @@ if __name__ == '__main__':
     geom_filename = wano_file['Geometries']
     neurons=wano_file['Neurons']
     act_funct=wano_file['Activation function']
+    dropout_type=wano_file['Dropout']
     layerss=wano_file['Hidden Layers']
     CO_distance=wano_file['Cut-off distance']
     lr=wano_file['Learning rate']
@@ -210,14 +217,14 @@ if __name__ == '__main__':
                 all_f.write(f"{row[0]} {row[1]} {row[2]}\n")
             all_f.write("}\n") 
 
-    Gfunc_data = src_nogrd.symmetry_function(distances, at_idx_map, Gparam_dict)
+    Gfunc_data = src_nogrd.symmetry_function(distances, at_idx_map, Gparam_dict,SUPPORTED_ELEMENTS)
     print(SUPPORTED_ELEMENTS)
 
     n_symm_func = Gfunc_data[SUPPORTED_ELEMENTS[0]][at_idx_map[SUPPORTED_ELEMENTS[0]][0]].shape[1]
     builder = netBuilder(SUPPORTED_ELEMENTS, n_symm_func)
     subnets = builder.build_subnets(n_dense_layers=layerss, n_units=neurons, 
                         hidden_activation=activations(act_funct),
-                        dropout_type="NoFirstDrop", dropout_ratio=0.015)
+                        dropout_type=drop(dropout_type), dropout_ratio=0.015)
     model = builder.build_molecular_net(at_idx_map, subnets)
     print(model.summary())
 
