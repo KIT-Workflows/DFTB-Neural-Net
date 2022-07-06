@@ -134,16 +134,6 @@ if __name__ == '__main__':
     SUPPORTED_ELEMENTS=get_elements(md_train_arr[0])
     at_idx_map = at_idx_map_generator_old(md_train_arr[0])
 
-    lst=list(range(0, nAtoms))
-    def find_tuples(lst, key, num=3):
-        return [i for i in itertools.permutations(lst, num) if sum(i)==key]
-    angles=find_tuples(lst,nAtoms,3)
-
-    all_ang=[]
-    for j in range(0,len(md_train_arr)):
-        for i in range (0,nAtoms):
-            all_ang.append(md_train_arr[j].get_angle(*angles[i]))
-
     # radial symmetry function parameters
     cutoff_rad = CO_distance
     Rs_array = np.linspace(min(distances.min()), CO_distance, num=int(max(distances.max())-min(distances.min())))   # based on max and min of the distances
@@ -152,7 +142,7 @@ if __name__ == '__main__':
 
 
     # angular symmetry function parameters
-    cutoff_ang = math.radians(max(all_ang))
+    cutoff_ang = 5
     lambd_array = np.array([-1, 1])
     zeta_array = np.array([1,4,16])
     eta_ang_array = np.array([0.001, 0.01, 0.05])

@@ -24,7 +24,7 @@ def get_settings_from_rendered_wano():
     settings['charge'] = wano_file['Initial guess']['Charge']
     settings['multiplicity'] = wano_file['Initial guess']['Multiplicity']
     settings['scc'] = wano_file['DFTB options']['SCC calculation']
-    settings['scc iter'] = 100
+    settings['third'] = wano_file['DFTB options']['Third order']
     settings['max scc iter'] = wano_file['DFTB options']['Max SCC iterations']
     settings['skf'] = wano_file['DFTB options']['Slater-Koster parameters']
     settings['opt'] = opt_options
@@ -37,7 +37,8 @@ def get_settings_from_rendered_wano():
     settings['Functions']=wano_file['Type of calculation']['Symmetry functions file']
     settings['Model']=wano_file['Type of calculation']['Model']
     settings['Thermostat']=wano_file['Type of calculation']['Thermostat']
-    settings['TimeStep']=wano_file['Type of calculation']['MD-Time-Step fs']
+    settings['TimeStep']=wano_file['Type of calculation']['Time-Step fs'] # Time step for MD
+    settings['MDTimeStep']=wano_file['Type of calculation']['MD-Time-Step fs'] # Time step for MD-ML
     settings['Steps']=wano_file['Type of calculation']['Steps']
     settings['MDsteps']=wano_file['Type of calculation']['MD-Steps']
     settings['InitTemp']=wano_file['Type of calculation']['Initial temperature K']
@@ -89,7 +90,7 @@ if __name__ == '__main__':
     while not done:
         done = dftbplus.run_dftb(False)
         if not done:
-            num_iter += settings['scc iter']
+            num_iter += settings['max scc iter']
             if num_iter > settings['max scc iter']:
                 print('SCC not converged in maximum number of iterations (%i)'%(settings['max scc iter']))
                 exit(0)
