@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
-import pdb
+import yaml
+import re
 
 ##### IMPORT Atomic Simulation Environment Functions #####
 import ase
@@ -9,11 +10,15 @@ from ase import Atom
 from ase.atoms import Atoms
 from ase.calculators.dftb import Dftb
 from ase.io import read, write
+import sys
 
 import matplotlib.pyplot as plt
 
 from sklearn.preprocessing import StandardScaler
 from ordered_enum import ValueOrderedEnum
+with open(sys.path[0]+ "/rendered_wano.yml") as file:
+    wano_file = yaml.full_load(file)
+geom_filename = wano_file['Geometries']
 
 """
 Global Variable Management:
@@ -31,26 +36,134 @@ def div0( a, b ):
         c[ ~ np.isfinite( c )] = 0  # -inf inf NaN
     return c
 
+dictonary_elements={"1"	:	"H"	,
+    "2"	:	"He"	,
+    "3"	:	"Li"	,
+    "4"	:	"Be"	,
+    "5"	:	"B"	,
+    "6"	:	"C"	,
+    "7"	:	"N"	,
+    "8"	:	"O"	,
+    "9"	:	"F"	,
+    "10"	:	"Ne"	,
+    "11"	:	"Na"	,
+    "12"	:	"Mg"	,
+    "13"	:	"Al"	,
+    "14"	:	"Si"	,
+    "15"	:	"P"	,
+    "16"	:	"S"	,
+    "17"	:	"Cl"	,
+    "18"	:	"Ar"	,
+    "19"	:	"K"	,
+    "20"	:	"Ca"	,
+    "21"	:	"Sc"	,
+    "22"	:	"Ti"	,
+    "23"	:	"V"	,
+    "24"	:	"Cr"	,
+    "25"	:	"Mn"	,
+    "26"	:	"Fe"	,
+    "27"	:	"Co"	,
+    "28"	:	"Ni"	,
+    "29"	:	"Cu"	,
+    "30"	:	"Zn"	,
+    "31"	:	"Ga"	,
+    "32"	:	"Ge"	,
+    "33"	:	"As"	,
+    "34"	:	"Se"	,
+    "35"	:	"Br"	,
+    "36"	:	"Kr"	,
+    "37"	:	"Rb"	,
+    "38"	:	"Sr"	,
+    "39"	:	"Y"	,
+    "40"	:	"Zr"	,
+    "41"	:	"Nb"	,
+    "42"	:	"Mo"	,
+    "43"	:	"Tc"	,
+    "44"	:	"Ru"	,
+    "45"	:	"Rh"	,
+    "46"	:	"Pd"	,
+    "47"	:	"Ag"	,
+    "48"	:	"Cd"	,
+    "49"	:	"In"	,
+    "50"	:	"Sn"	,
+    "51"	:	"Sb"	,
+    "52"	:	"Te"	,
+    "53"	:	"I"	,
+    "54"	:	"Xe"	,
+    "55"	:	"Cs"	,
+    "56"	:	"Ba"	,
+    "57"	:	"La"	,
+    "58"	:	"Ce"	,
+    "59"	:	"Pr"	,
+    "60"	:	"Nd"	,
+    "61"	:	"Pm"	,
+    "62"	:	"Sm"	,
+    "63"	:	"Eu"	,
+    "64"	:	"Gd"	,
+    "65"	:	"Tb"	,
+    "66"	:	"Dy"	,
+    "67"	:	"Ho"	,
+    "68"	:	"Er"	,
+    "69"	:	"Tm"	,
+    "70"	:	"Yb"	,
+    "71"	:	"Lu"	,
+    "72"	:	"Hf"	,
+    "73"	:	"Ta"	,
+    "74"	:	"W"	,
+    "75"	:	"Re"	,
+    "76"	:	"Os"	,
+    "77"	:	"Ir"	,
+    "78"	:	"Pt"	,
+    "79"	:	"Au"	,
+    "80"	:	"Hg"	,
+    "81"	:	"Tl"	,
+    "82"	:	"Pb"	,
+    "83"	:	"Bi"	,
+    "84"	:	"Po"	,
+    "85"	:	"At"	,
+    "86"	:	"Rn"	,
+    "87"	:	"Fr"	,
+    "88"	:	"Ra"	,
+    "89"	:	"Ac"	,
+    "90"	:	"Th"	,
+    "91"	:	"Pa"	,
+    "92"	:	"U"	,
+    "93"	:	"Np"	,
+    "94"	:	"Pu"	,
+    "95"	:	"Am"	,
+    "96"	:	"Cm"	,
+    "97"	:	"Bk"	,
+    "98"	:	"Cf"	,
+    "99"	:	"Es"	,
+    "100"	:	"Fm"	,
+    "101"	:	"Md"	,
+    "102"	:	"No"	,
+    "103"	:	"Lr"	,
+    "104"	:	"Rf"	,
+    "105"	:	"Db"	,
+    "106"	:	"Sg"	,
+    "107"	:	"Bh"	,
+    "108"	:	"Hs"	,
+    "109"	:	"Mt"	,
+    "110"	:	"Ds"	,
+    "111"	:	"Rg"	,
+    "112"	:	"Cn"	,
+    "113"	:	"Uut"	,
+    "114"	:	"Fl"	,
+    "115"	:	"Uup"	,
+    "116"	:	"Lv"	,
+    "117"	:	"Uus"	,
+    "118"	:	"Uuo"	}
+
 class supported_elements(ValueOrderedEnum):
-    """
-    Supported elements and their nuclear charges.
-    Used for enforcing atom ordering by nuclear charge
-    Can be iterated over, but only uses value if sorted first.
-    """
-    H = 1
-    C = 6
-    S = 16
+    def supported(geom_filename):
+        struct = ase.io.read(geom_filename, format = "xyz")
+        elem = list(dict.fromkeys(struct.get_chemical_symbols()))
+        reversed_dictionary = {v: k for k, v in dictonary_elements.items()}
+        dict2 = {x:reversed_dictionary[x] for x in elem}
+        return dict2
 
-
-"""
-#####################
-
-    Prepare for the generating
-    the Symmetry function.
-
-#####################
-"""
-
+    supported(sys.path[0]+'/'+ geom_filename)
 
 def at_idx_map_generator_old(atoms):
     """
@@ -256,7 +369,6 @@ def at_ele_arr_generator(atoms):
 
     return at_ele_map, at_ele_arr, ele_dict
 
-
 def ang_list_generator(element_list):
     """Generate all the combo of the element str
 
@@ -285,15 +397,6 @@ def ang_list_generator(element_list):
             ang_list.append(pair_str)
 
     return ang_list
-
-
-
-
-
-
-
-
-
 
 def xyzArr_generator(md_samplesArr):
     """
@@ -439,7 +542,7 @@ def angular_filter(Rij, Rik, Rjk, eta, zeta, lambd):
 # symmetry function calculates a matrix of all the G values. (G -> vector)
 # For all the atoms for a given input file.
 # Improvement: Separate the individual symmetry function section (so easy to code)
-def symmetry_function(distances, at_idx_map, Gparam_dict):
+def symmetry_function(distances, at_idx_map, Gparam_dict,SUPPORTED_ELEMENTS):
     """
     calculate symmetry functions from distances for the set of molecules
 
@@ -464,7 +567,7 @@ def symmetry_function(distances, at_idx_map, Gparam_dict):
 
     # This for loop goes through elements
     # Are together
-    for at_type in at_idx_map.keys():
+    for at_type in SUPPORTED_ELEMENTS:
         Gparam_rad = Gparam_dict[at_type]['rad']
         Gparam_ang = Gparam_dict[at_type]['ang']
 
@@ -504,22 +607,19 @@ def symmetry_function(distances, at_idx_map, Gparam_dict):
             # ======================
             # angular components
             for atAatB_type in Gparam_ang.keys():
+                atAB=re.findall('[A-Z][^A-Z]*', atAatB_type)
                 comp_count = Gparam_ang[atAatB_type].shape[0]
                 G_temp_component = np.zeros((Nsamples, comp_count))
-
-                # This for loop goes through all 'HH', 'HO' combo?
-                for count, values in enumerate(Gparam_ang[atAatB_type]):
-                    atA_list = at_idx_map[atAatB_type[0]][at_idx_map[atAatB_type[0]]!=at1]
+            for count, values in enumerate(Gparam_ang[atAatB_type]):
+                    atA_list = at_idx_map[atAB[0]][at_idx_map[atAB[0]]!=at1]
                     for atA in atA_list:
                         dist_1A = tuple(sorted([at1, atA]))
                         R1A_array = distances[dist_1A].values[:Nsamples]
-
-
-                        if atAatB_type[0] == atAatB_type[1]:
-                            atB_list = at_idx_map[atAatB_type[1]][(at_idx_map[atAatB_type[1]]!=at1) & (at_idx_map[atAatB_type[1]]>atA)]
+                        if atAB[0] == atAB[1]:
+                            atB_list = at_idx_map[atAB[1]][(at_idx_map[atAB[1]]!=at1) & (at_idx_map[atAB[1]]>atA)]
                         else:
-                            atB_list = at_idx_map[atAatB_type[1]][(at_idx_map[atAatB_type[1]]!=at1)]
-
+                            atB_list = at_idx_map[atAB[1]][(at_idx_map[atAB[1]]!=at1)]
+                        
                         for atB in atB_list:
                             dist_1B = tuple(sorted([at1, atB]))
                             dist_AB = tuple(sorted([atA, atB]))
@@ -530,18 +630,13 @@ def symmetry_function(distances, at_idx_map, Gparam_dict):
                                 import pdb; pdb.set_trace()
                             if np.any(RAB_array == 0):
                                 import pdb; pdb.set_trace();
-
-
                             ang_temp = angular_filter(R1A_array, R1B_array, RAB_array, values[0], values[1], values[2]) \
                                         * cutoff(values[3], R1A_array) * cutoff(values[3], R1B_array) * cutoff(values[3], RAB_array)
 
                             G_temp_component[:, count] += ang_temp
-
-                Gfunc_data[at_type][at1][:,G_temp_count:G_temp_count+comp_count] = G_temp_component
-                G_temp_count += comp_count
+            Gfunc_data[at_type][at1][:,G_temp_count:G_temp_count+comp_count] = G_temp_component
+            G_temp_count += comp_count
     return Gfunc_data
-
-
 
 
 

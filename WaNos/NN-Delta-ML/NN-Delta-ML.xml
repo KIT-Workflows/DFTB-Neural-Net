@@ -29,6 +29,10 @@
                     <Entry id="1">relu</Entry>
                     <Entry id="2">sigmoid</Entry>
                 </WaNoDropDown>
+		<WaNoDropDown name="Dropout" description = "Regularization">
+					<Entry id="0" chosen="TRUE">NoFirstDrop</Entry>
+					<Entry id="1">NoDrop</Entry>
+		</WaNoDropDown>
 	</WaNoRoot>
 	
 	<WaNoExecCommand>
