@@ -1,0 +1,9 @@
+Delete-Files: false
+Assemble-files (HDF5): true
+Files:
+- Search-Parameters:
+  - var: dftb_energy
+  Search-in-file: dftb_plus_results.yml
+- Search-Parameters:
+  - var: orca_energy
+  Search-in-file: orca_results.yml

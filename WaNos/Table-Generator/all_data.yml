@@ -1,0 +1,26 @@
+dftb_plus_results.yml:
+  '270':
+    dftb_energy: -15.8347723311
+    dftb_title: '270'
+    energy_unit: Hartree
+  '271':
+    dftb_energy: -15.8436976671
+    dftb_title: '271'
+    energy_unit: Hartree
+  '272':
+    dftb_energy: -15.8060313677
+    dftb_title: '272'
+    energy_unit: Hartree
+orca_results.yml:
+  '5':
+    orca_energy: -1314.27097018
+    orca_title: '5'
+    orca_units: Eh
+  '6':
+    orca_energy: -1314.33611814
+    orca_title: '6'
+    orca_units: Eh
+  '7':
+    orca_energy: -1314.33632291
+    orca_title: '7'
+    orca_units: Eh

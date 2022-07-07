@@ -24,7 +24,7 @@ def get_settings_from_rendered_wano():
     settings['charge'] = wano_file['Initial guess']['Charge']
     settings['multiplicity'] = wano_file['Initial guess']['Multiplicity']
     settings['scc'] = wano_file['DFTB options']['SCC calculation']
-    settings['scc iter'] = 100
+    settings['third'] = wano_file['DFTB options']['Third order']
     settings['max scc iter'] = wano_file['DFTB options']['Max SCC iterations']
     settings['skf'] = wano_file['DFTB options']['Slater-Koster parameters']
     settings['opt'] = opt_options
@@ -37,7 +37,8 @@ def get_settings_from_rendered_wano():
     settings['Functions']=wano_file['Type of calculation']['Symmetry functions file']
     settings['Model']=wano_file['Type of calculation']['Model']
     settings['Thermostat']=wano_file['Type of calculation']['Thermostat']
-    settings['TimeStep']=wano_file['Type of calculation']['MD-Time-Step fs']
+    settings['TimeStep']=wano_file['Type of calculation']['Time-Step fs'] # Time step for MD
+    settings['MDTimeStep']=wano_file['Type of calculation']['MD-Time-Step fs'] # Time step for MD-ML
     settings['Steps']=wano_file['Type of calculation']['Steps']
     settings['MDsteps']=wano_file['Type of calculation']['MD-Steps']
     settings['InitTemp']=wano_file['Type of calculation']['Initial temperature K']
@@ -65,6 +66,56 @@ def sanitize_multiplicity(multi,n_el):
     
     return multi_new
 
+def search_string_in_file(file_name, string_to_search):
+
+    """Search for the given string in file and return lines containing that string,
+    along with line numbers"""
+    
+    line_number = 0
+    list_of_results = []
+    
+    ''' Open the file in read only mode'''
+
+    with open(file_name, 'r') as read_obj:
+
+        '''Read all lines in the file one by one'''
+
+        for line in read_obj:
+            
+            '''For each line, check if line contains the string'''
+            
+            line_number += 1
+            if string_to_search in line:
+                
+                '''If yes, then add the line number & line as a tuple in the list'''
+                
+                list_of_results.append((line_number, line.rstrip()))
+   
+    '''Return list of tuples containing line numbers and lines where string is found'''
+   
+    return list_of_results
+
+def elec_charges():
+
+    t1 = search_string_in_file("detailed.out","Atomic gross charges")[0][0]
+    structure = read("final_structure.xyz", format="xyz")
+    tot_atoms = structure.get_global_number_of_atoms()
+    n = t1+1
+
+    with open ("detailed.out", 'r') as file:
+        # Read each line in loop
+        charges = file.readlines()[n:n+tot_atoms]
+
+    charge_dict = {}
+    for ii in range(tot_atoms):
+        temp_str = charges[ii]
+        result = [x.strip() for x in temp_str.split(',')]
+        l = result[0].split()
+        charge_dict[int(l[0])]=float(l[1])
+
+    return charge_dict
+
+
 if __name__ == '__main__':
     
     struct_0_file = 'initial_structure.xyz'
@@ -89,7 +140,7 @@ if __name__ == '__main__':
     while not done:
         done = dftbplus.run_dftb(False)
         if not done:
-            num_iter += settings['scc iter']
+            num_iter += settings['max scc iter']
             if num_iter > settings['max scc iter']:
                 print('SCC not converged in maximum number of iterations (%i)'%(settings['max scc iter']))
                 exit(0)
@@ -117,7 +168,10 @@ if __name__ == '__main__':
                 else: os.rename('final_structure.xyz','intermediate_structure.xyz')
     else: os.rename(struct_0_file,'final_structure.xyz')
 
+    ''' Outputs ''' 
     results_dict = {}
+    results_dict['charges'] = elec_charges()
+    results_dict['Slatko'] = settings['skf']
     results_dict['energy_unit'] = 'Hartree'
     results_dict['dftb_title'] = settings['title']
     with open('detailed.out') as infile:
