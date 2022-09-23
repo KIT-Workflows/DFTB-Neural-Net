@@ -5,13 +5,13 @@ This workflow developed in the SimStack framework enables the correction of DFTB
 
 In the folder WaNos there are several different WaNos: **DFT-Turbomole**, **DFTBplus**, **Mult-It**, **NN-Delta-ML**, **ORCA**, **Super-XYZ**, **Table-Generator** and **UnpackMol**, used to build the workflow. Below we describe each one and the main parameter exposed.
 
-### In this workflow, we will be able to:
+## In this workflow, we will be able to:
 ```
 1. Load a molecule or a set of them and define the number of points above a particuĺar surface (Mult-Mol).
 2. Defining the surface type and setting a molecule's position above the surface (Surface).
 3. Run the DFT calculations using VASP code, accounting for the proper corrections (DFT-VASP).
 4. Arrange all the total energy values of the system in a table format (Table-Generator). 
-
+```
 
 
 ## 1. Installation and dependencies
