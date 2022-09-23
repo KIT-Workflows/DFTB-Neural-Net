@@ -1,7 +1,17 @@
 name: machine-learning-env
 
+conda create -n NAME python=3.6 numpy scikit-learn tensorflow-gpu keras cython pandas matplotlib seaborn ase pyyaml
+
 dependencies:
-  - pandas
   - pip
-  - python
+  - numpy
+  - pandas
   - scikit-learn
+  - tensorflow-gpu
+  - keras
+  - cython 
+  - matplotlib 
+  - seaborn 
+  - ase 
+  - pyyaml
+  - tar
