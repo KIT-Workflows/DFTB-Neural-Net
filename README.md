@@ -65,3 +65,5 @@ pip3 install ordered_enum
 ### 2.2 Outputs
   - Machine learning report 
   - Pickle files of the machine learning model.
+
+In the video _$\Delta$-learning workflow_, we teach how to set up the workflow to run it in SimStack. 
