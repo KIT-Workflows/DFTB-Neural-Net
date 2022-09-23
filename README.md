@@ -19,7 +19,9 @@ Install via pip ordered-enum
 ```
 pip3 install ordered_enum
 ```
-## Installing DFTB+ in int-nano
+## Installing DFTB+ in int-nano machine
+> :warning: **If you are installing DFTB+ on a different machine**: Be very careful and make the necessary adjustments.
+
 1. git clone -b machine-learning https://github.com/tomaskubar/dftbplus.git 
 2. cd dftbplus
 3. module load gnu8/8.3.0
