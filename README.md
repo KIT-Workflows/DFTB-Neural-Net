@@ -7,7 +7,7 @@ In the folder WaNos there are several different WaNos: **DFT-Turbomole**, **DFTB
 
 ## In this workflow, we will be able to:
 ```
-1. Load a molecule or a set of them and define the number of points above a particuĺar surface (Mult-Mol).
+1. Load a set of molecular trial structures in a `.tar` file.
 2. Defining the surface type and setting a molecule's position above the surface (Surface).
 3. Run the DFT calculations using VASP code, accounting for the proper corrections (DFT-VASP).
 4. Arrange all the total energy values of the system in a table format (Table-Generator). 
