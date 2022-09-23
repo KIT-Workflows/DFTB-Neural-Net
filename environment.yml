@@ -1,0 +1,7 @@
+name: machine-learning-env
+
+dependencies:
+  - pandas
+  - pip
+  - python
+  - scikit-learn
