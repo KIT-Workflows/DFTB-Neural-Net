@@ -14,11 +14,12 @@ In the folder WaNos there are several different WaNos: **DFT-Turbomole**, **DFTB
 5. Run the DFTB calculations using BFTB+ code using **DFTBplus** WaNo. 
 6. Arrange all the total energy values of the system in a table format (Table-Generator).
 7. Append all files from the `.tar` input file in a specific order and shift the total DFT and DFTB energies from the previously computed reference energies.
-8. Compute the $\Delta$ energy to generate the machine learning (ML) model.
+8. Compute the $\Delta$ energy to generate the machine learning (ML) model and the learning report.
 9. Apply the ML model to predict the $\Delta E$ for a similar system when stimulated via the DFTB method.
 
 ![](ML-Fig1.png)
-**Fig 1** _This workflow aims to perform several DFT calculations of molecules absorbing on a given surface. It is composed of Mult-Mol, Surface, DFT-VASP, and Table-Generator **WaNos** connected by the ForEach loop control. In step 1, we generate the number of points over the surface, where the molecule will be added. Steps 2 and 3 define the surface type and the DFT calculation methods employed in the simulation. The **WaNo** in the last step extracts the inquired variables of the output file from the previous steps._
+
+**Fig 1** _This workflow aims to create an ML model to correct DFTB method accuracy concerning the DFT level. It is composed of **DFT-Turbomole**, **DFTBplus**, **Mult-It**, **NN-Delta-ML**, **ORCA**, **Super-XYZ**, **Table-Generator** and **UnpackMol**  **WaNos** connected by the AdvancedFor loop control. (a) When the system is far from the equilibrium region, we compute the reference energy for DFT and DFTB levels. (b) In this step, the set of molecular structures in a `.tar` file is loaded, and a high throughput calculation (single shot) is performed for DFT and DFTB theory levels. The workflow automatically creates a machine learning report at the end of ML model generation._ 
 
 
 ## 1. Installation and dependencies
