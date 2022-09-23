@@ -12,7 +12,6 @@ Install conda environment, the following packages would be needed:
 
 ```
 conda create --name environment_name python=3.6 --file environment.yml
-conda create -n NAME python=3.6 numpy scikit-learn tensorflow-gpu keras cython pandas matplotlib seaborn ase pyyaml
 ```
 
 Install via pip ordered-enum
