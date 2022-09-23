@@ -12,6 +12,7 @@ In the folder WaNos there are several different WaNos: **DFT-Turbomole**, **DFTB
 3. Run the DFT calculations using VASP code, accounting for the proper corrections (DFT-VASP).
 4. Arrange all the total energy values of the system in a table format (Table-Generator). 
 
+![](ML-Fig1.png)
 
 <img src="ML-Fig1.png"  width="90%">
 
