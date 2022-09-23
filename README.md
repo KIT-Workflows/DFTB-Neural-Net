@@ -18,7 +18,6 @@ In the folder WaNos there are several different WaNos: **DFT-Turbomole**, **DFTB
 9. Apply the ML model to predict the $\Delta E$ for a similar system when stimulated via the DFTB method.
 
 ![](ML-Fig1.png)
-
 **Fig 1** _This workflow aims to perform several DFT calculations of molecules absorbing on a given surface. It is composed of Mult-Mol, Surface, DFT-VASP, and Table-Generator **WaNos** connected by the ForEach loop control. In step 1, we generate the number of points over the surface, where the molecule will be added. Steps 2 and 3 define the surface type and the DFT calculation methods employed in the simulation. The **WaNo** in the last step extracts the inquired variables of the output file from the previous steps._
 
 
