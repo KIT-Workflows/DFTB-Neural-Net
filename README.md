@@ -5,7 +5,7 @@ This workflow developed in the SimStack framework enables the correction of DFTB
 
 In the folder WaNos there are several different WaNos: **DFT-Turbomole**, **DFTBplus**, **Mult-It**, **NN-Delta-ML**, **ORCA**, **Super-XYZ**, **Table-Generator** and **UnpackMol**, used to build the workflow. Below we describe each one and the main parameter exposed.
 
-## Conda Environment
+## 1. Conda Environment and Python dependencies
 Install conda environment, the following packages would be needed:
 
 ```
