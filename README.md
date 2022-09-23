@@ -58,3 +58,10 @@ pip3 install ordered_enum
 ```diff 
 + be cautious with conda env., it must have libgfortran5 if the installation wants to be done inside the conda environment
 ```
+## 2. Inputs and Outputs
+### 2.1 Inputs
+  - Molecular geometry far from the equilibrium region (as shown in **Fig 1 (a)**).
+  - Set of randmized structures around the Potential energy surface (`.tar` file as shown in **Fig 1 (b)**).
+### 2.2 Outputs
+  - Machine learning report 
+  - Pickle files of the machine learning model.
