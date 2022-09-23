@@ -8,9 +8,14 @@ In the folder WaNos there are several different WaNos: **DFT-Turbomole**, **DFTB
 ## In this workflow, we will be able to:
 
 1. Load a set of molecular trial structures in a `.tar` file.
-2. Defining the surface type and setting a molecule's position above the surface (Surface).
-3. Run the DFT calculations using VASP code, accounting for the proper corrections (DFT-VASP).
-4. Arrange all the total energy values of the system in a table format (Table-Generator). 
+2. Unpack all molecular structures inside the AdvancedForEach loop control in the Simstack framework.
+3. Compute the reference energy of the system.
+4. Run the DFT calculations using ORCA or Turbomole codes, **ORCA** or **DFT-Turbomole** WaNos.
+5. Run the DFTB calculations using BFTB+ code using **DFTBplus** WaNo. 
+6. Arrange all the total energy values of the system in a table format (Table-Generator).
+7. Append all files from the `.tar` input file in a specific order and shift the total DFT and DFTB energies from the previously computed reference energies.
+8. Compute the $\Delta$ energy to generate the machine learning (ML) model.
+9. Apply the ML model to predict the $\Delta E$ for a similar system when stimulated via the DFTB method.
 
 ![](ML-Fig1.png)
 
