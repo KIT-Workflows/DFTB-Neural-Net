@@ -8,14 +8,14 @@ In the folder WaNos there are several different WaNos: **DFT-Turbomole**, **DFTB
 ## 1. Conda Environment and Python dependencies
 Install conda environment, the following packages would be needed:
 
-
-
 ```
 conda create --name environment_name python=3.6 --file environment.yml
 ```
-
 Install via pip ordered-enum
 
+```
+pip3 install ordered_enum
+```
 ## Installing DFTB+ in int-nano
 1. git clone -b machine-learning https://github.com/tomaskubar/dftbplus.git 
 2. cd dftbplus
