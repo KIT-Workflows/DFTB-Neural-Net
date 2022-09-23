@@ -13,6 +13,8 @@ In the folder WaNos there are several different WaNos: **DFT-Turbomole**, **DFTB
 4. Arrange all the total energy values of the system in a table format (Table-Generator). 
 ```
 
+![](ML-Fig1.png)
+
 
 ## 1. Installation and dependencies
 Here you will find the steps to install **DFTB+** code and python dependencies necessary to run the workflow. Of course, we assume that you already installed the **DFT** code. You can choose any option available in the [list of quantum chemistry codes.](https://en.wikipedia.org/wiki/List_of_quantum_chemistry_and_solid-state_physics_software.) In this case, we use **ORCA** or **Turbomole**.  
