@@ -5,7 +5,10 @@ This workflow developed in the SimStack framework enables the correction of DFTB
 
 In the folder WaNos there are several different WaNos: **DFT-Turbomole**, **DFTBplus**, **Mult-It**, **NN-Delta-ML**, **ORCA**, **Super-XYZ**, **Table-Generator** and **UnpackMol**, used to build the workflow. Below we describe each one and the main parameter exposed.
 
-## 1. Conda Environment and Python dependencies
+## 1. Installation and dependencies
+Here you will find the steps to install **DFTB+** code and python dependencies necessary to run the workflow. Of course we are assuming that you alredy installed the **DFT** code, which you can freely chosse among the many options avaible outthere [https://en.wikipedia.org/wiki/List_of_quantum_chemistry_and_solid-state_physics_software](https://).    
+
+### 1.1 Conda Environment and Python dependencies
 Install conda environment, the following packages would be needed:
 
 ```
