@@ -17,6 +17,8 @@ In the folder WaNos there are several different WaNos: **DFT-Turbomole**, **DFTB
 8. Compute the $\Delta$ energy to generate the machine learning (ML) model and the learning report.
 9. Apply the ML model to predict the $\Delta E$ for a similar system when stimulated via the DFTB method.
 
+## Workflow for $\Delta$-learning neural network
+
 ![](ML-Fig1.png)
 
 **Fig 1** _This workflow aims to create an ML model to correct DFTB method accuracy concerning the DFT level. It is composed of **DFT-Turbomole**, **DFTBplus**, **Mult-It**, **NN-Delta-ML**, **ORCA**, **Super-XYZ**, **Table-Generator** and **UnpackMol**  **WaNos** connected by the AdvancedFor loop control. (a) When the system is far from the equilibrium region, we compute the reference energy for DFT and DFTB levels. (b) In this step, the set of molecular structures in a `.tar` file is loaded, and a high throughput calculation (single shot) is performed for DFT and DFTB theory levels. The workflow automatically creates a machine learning report at the end of ML model generation._ 
