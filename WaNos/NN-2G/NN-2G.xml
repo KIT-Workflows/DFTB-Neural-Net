@@ -1,0 +1,60 @@
+<WaNoTemplate>
+    
+    <WaNoMeta>
+ 		<Author>
+  			<Name> Claudia Leticia Gomez Flores,  
+				  	Celso R. C. Rego </Name>
+  			<Email> claudia.flores@kit.edu 
+				   celsorego@kit.edu</Email>
+ 		</Author>
+
+		<Description>
+   			This WaNo performs NN delta-machine learning approach for potertial.
+ 		</Description>
+
+ 		<Keyword>NN, ML</Keyword>
+	</WaNoMeta>
+	
+	<WaNoRoot name="NN-2G">
+		<WaNoFile logical_filename="Geometry" name="Geometries">C:\Users\claud\Documents\CN\WaNos\NN-2G\appended_structures.xyz</WaNoFile>
+		<WaNoFile logical_filename="Data_energy" name="Energies">C:\Users\claud\Documents\CN\WaNos\NN-2G\rearranged-table.csv</WaNoFile>
+		<WaNoFile logical_filename="Ref_dft" name="Ref-Energy">C:\Users\claud\Documents\CN\WaNos\NN-Delta-ML\ref_dft</WaNoFile>
+		<WaNoFile logical_filename="Descriptor" name="Descriptor">C:\Users\claud\Documents\CN\WaNos\Descriptor\Gfunc.pkl</WaNoFile>
+
+		<WaNoBool name="Corrective model">True</WaNoBool>
+		<WaNoFile visibility_condition="%s == True" visibility_var_path="Corrective model" logical_filename="DFTB.txt" name="Ref-Energy-DFTB">C:\Users\claud\Documents\CN\WaNos\NN-Delta-ML\ref_dftb</WaNoFile>
+
+
+		<WaNoInt name="Neurons" description = "Hidden layer neurons">15</WaNoInt>
+		<WaNoFloat name="Learning rate" description = "Learning rate">0.05</WaNoFloat>
+		<WaNoInt name="Hidden Layers" description = "Hidden layers">3</WaNoInt>
+		<WaNoDropDown name="Activation function" description = "To define">
+                    <Entry id="0" chosen="TRUE">tanh</Entry>
+                    <Entry id="1">relu</Entry>
+                    <Entry id="2">sigmoid</Entry>
+                </WaNoDropDown>
+		<WaNoDropDown name="Dropout" description = "Regularization">
+					<Entry id="0" chosen="TRUE">NoFirstDrop</Entry>
+					<Entry id="1">NoDrop</Entry>
+		</WaNoDropDown>
+	</WaNoRoot>
+	
+	<WaNoExecCommand>
+		source  /home/ws/qs7669/anaconda3/etc/profile.d/conda.sh
+		conda activate dftb-nn
+		python nn-delta-ml.py
+		python graphs.py
+	</WaNoExecCommand>
+	
+	<WaNoInputFiles>
+		<WaNoInputFile logical_filename="nn-delta-ml.py">nn-delta-ml.py</WaNoInputFile>
+		<WaNoInputFile logical_filename="graphs.py">graphs.py</WaNoInputFile>
+		<WaNoInputFile logical_filename="src.tar">src.tar</WaNoInputFile>  
+		<WaNoInputFile logical_filename="report_template.body">report_template.body</WaNoInputFile> 
+	</WaNoInputFiles>
+
+	<WaNoOutputFiles>
+		<WaNoOutputFile>Model.tar</WaNoOutputFile> 	
+		<WaNoOutputFile>output_dict.yml</WaNoOutputFile>
+	</WaNoOutputFiles>
+</WaNoTemplate>

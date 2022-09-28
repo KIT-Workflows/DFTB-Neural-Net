@@ -1,0 +1,48 @@
+<html>
+<h1> Learning report </h1>
+
+<p style="color:rgba(0, 255, 213, 0.534);font-size:24px;">
+
+</p>
+
+<p>The data distribution can be observed at Fig.1, the training data had a range from {{ output_dict["Train_Range"] }} kcal/mol and the
+ test data had ranged on {{ output_dict["Test_Range"] }} kcal/mol.:</p>
+
+<figure>
+<img src="Histogram.png" alt="RDFs" style="width:35%">
+<figcaption>Fig.1  - Data distribution
+</figure>
+
+{% if output_dict["Corrective model"]=='true' %}
+    The corelation between the ORCA generated data against the DFTB+ generated data can be seen in Fig. 2, while the delta correlation can be seen
+    at Fig. 3. The energies used as reference were:
+    <li>{{ output_dict["DFTB_reference_energy"] }} for DFTB</li>
+    <li>{{ output_dict["ORCA_reference_energy"] }} for DFT</li>
+    <figure>
+    <img src="Correlation.png" alt="RDFs" style="width:55%">
+    <figcaption>Fig.2  - ORCA vs. DFTB
+    </figure>
+
+
+    <figure>
+    <img src="Delta_correlation.png" alt="RDFs" style="width:55%">
+    <figcaption>Fig.3  - Delta correlation
+    </figure>
+
+    {% else %}
+    The energy used as reference was {{ output_dict["Reference_energy"] }} for {{ output_dict["Level of theory"] }}.
+{% endif %}
+
+The used neural network consisted on {{ output_dict["Neurons"] }} neurons distributed in {{ output_dict["Layers"] }} hidden layers for each element of the system. 
+The activation function was {{ output_dict["Activation_function"] }}. The input layer consisted on {{ output_dict["Number_of_symmetries"] }} symmetry vectors for each one of the atoms. 
+The data set was divided in Training, Validation and Test with its respective number of structures: {{ output_dict["Training_structures"] }}, {{ output_dict["Validation_structures"] }}, {{ output_dict["Testing_structures"] }}.
+
+
+The RMSE of the training was {{ output_dict["RMSE"] }} and the MAE was of {{ output_dict["MAE"] }}. The accuarcy plot of the test set can be seen at Fig.4.
+
+<figure>
+<img src="TestSet.png" alt="RDFs" style="width:55%">
+<figcaption>Fig. 4 - Test Set
+</figure>
+
+</html>

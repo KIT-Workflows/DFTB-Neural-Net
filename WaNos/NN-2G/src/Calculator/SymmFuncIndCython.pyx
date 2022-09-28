@@ -1,0 +1,844 @@
+"""
+
+
+This is the module for the processing of symmetry function
+for individual molecules.
+
+
+"""
+
+
+
+# Import Symmetry Functions
+# Then wrap it for individual ones.
+#from src.src_nogrd import feat_function
+#from src.src_nogrd import distances_from_xyz
+#from src.src_nogrd import xyzArr_generator
+import pandas as pd
+import src.Calculator.src_nogrd as src_nogrd
+import matplotlib.pyplot as plt
+import src.Calculator.Calculation as Calculation
+#import SymmFuncIndCython
+
+import numpy as np
+from libc.math cimport exp, pow, sqrt, trunc
+cimport numpy as np
+import time
+#from CalculationCython cimport get_neighbour
+#from CalculationCython cimport distance_xyz_brutal_mol
+
+from cython.parallel import prange
+"""
+Global Variables (To Speed up)
+"""
+cdef long no_str = 0
+cdef long i_str = 1
+cdef long j_str = 2
+cdef long k_str = 3
+
+
+"""
+Numpy Data Types:
+"""
+NPdouble = np.float64
+NPint    = np.int32
+
+ctypedef np.float64_t NPdouble_t
+ctypedef np.int32_t NPint_t
+
+cdef struct XYZ:
+  NPdouble_t x
+  NPdouble_t y
+  NPdouble_t z
+
+cdef struct DIST:
+  NPdouble_t dist    # Distance  = R
+  NPdouble_t dist_dx # dR/dx
+  NPdouble_t dist_dy # dR/dy
+  NPdouble_t dist_dz # dR/dz
+
+
+
+# Mode Specification:
+# Turn on PRINT MODE
+
+"""
+##########
+
+From CompileArr.py
+
+##########
+"""
+
+
+cdef long get_pair_idx(NPint_t ele_idx_1, NPint_t ele_idx_2, long n_ele) nogil:
+    """Take the index of the element pair, and return the indices in the
+    pair_count (array)
+
+
+
+
+    Explinataion:
+    Using the same algorithm as the function `distance_xyz_index`
+
+    Fundamentally a number lock for the pairs in the 1D array. So that
+    (m, n) will have the unique number.
+
+
+    """
+    cdef long m, n
+    cdef double index
+
+    if ele_idx_1 > ele_idx_2:
+        m = <long> ele_idx_2
+        n = <long> ele_idx_1
+    else:
+        m = <long> ele_idx_1
+        n = <long> ele_idx_2
+
+    index = trunc(n_ele * m - m * (m+1) / 2 + (n - m) - 1)
+    return <long>index
+
+
+
+
+
+
+cdef long get_angle_idx(NPint_t at_i, NPint_t jk_idx, long n_pairs) nogil:
+  """An pair to access the angle for between atom i, j, k.
+
+
+        Args:
+          at_i: atom index for atom i.
+          jk_idx: the distance index for atomic pair (at_j, at_k)
+          n_pairs: equal to the number of pairs totally available.
+                    n_pairs = int((n_atoms) * (n_atoms - 1) / 2 )
+
+  Mathematical Property:
+    CosAngle(i, j, k)  = CosAngle(i, k, j)
+    CosAngle(j, i, k) != CosAngle(j, i, k)
+
+  Trick:
+  The pair_idx for the distance already have the property that
+  Pair_idx(j, k) = Pair_idx(k, j)
+  Therefore, J. Zhu decided to use the jk_idx to directly access
+  (i, j, k)  = (i, (j, k))
+
+
+  """
+  cdef long angle_idx
+  angle_idx = at_i * n_pairs + jk_idx
+
+  return angle_idx
+
+
+
+# cdef long get_symm_angle_idx(NPint_t at_i, NPint_t jk_idx, long symm_count_0, long n_pairs):
+#   """To access the given index for the (atom i, atom j, atom k, with symmetry function count)
+#
+#         Args:
+#           symm_count_0:
+#                   !!! Different from symm_count !
+#                   symm_count_0 = symm_count - symm_count_start
+#
+#
+#   Purpose:
+#   Give a unique index for (i, j, k) and also the corresponding symmetry function count
+#
+#   """
+#   cdef long symm_angle_idx
+#
+#
+#
+#   return symm_angle_idx
+
+
+"""
+##########
+
+From Calculation.py
+
+##########
+"""
+cdef long distance_xyz_index(long at1, long at2, long n_atoms) nogil:
+    """Take the index of two atoms and return the indices in the distance_xyz
+
+            Args:
+                at1, at2: (int) index of atom 1 and atom 2
+                n_atoms: number of atoms
+
+    Explaination (Algorithm):
+    Junmian Zhu has shown mathematically that the index for the tuple (m,n) is
+    index[ (m,n) ] = Stack[m] + (n-m)
+    where Stack[m] is the sum of
+    ((n_atom-1), (n_atom-2), ....)
+
+    By the formular of sum for a series,
+    Stack[m] = n_atoms * m - m * (m+1) / 2
+
+    Keep in Mind, m must be the smaller index by convention.
+
+    """
+    cdef long m
+    cdef long n
+    cdef double index
+    if at1 > at2:
+        m = at2
+        n = at1
+    else:
+        m = at1
+        n = at2
+
+
+    index = trunc(n_atoms * m - m * (m+1) / 2 + (n - m) - 1)
+    return <long>index
+
+
+
+
+cdef DIST distance_xyz_ind(NPdouble_t x1, NPdouble_t y1, NPdouble_t z1, NPdouble_t x2, NPdouble_t y2, NPdouble_t z2):
+    """Use the C-Definition to calculate the distances between two atoms.
+
+          Args:
+            x1, y1, z1: xyz of atom 1
+            x2, y2, z2: xyz of atom 2
+
+          Outputs:
+            distance: distance between atom 1 and atom 2
+
+    Explaination:
+    In C, it is faster to access individual element of the numpy array (than getting
+    an xyz and then access its x, y, z, component)
+    Also, it is faster to calculate the distance directly for individual scalers.
+    Therefore, the xyz are broken in to individual x,y,z component to speed up.
+    """
+
+    cdef NPdouble_t dx, dy, dz
+    dx = x2 - x1
+    dy = y2 - y1
+    dz = z2 - z1
+
+    cdef NPdouble_t dist = sqrt(dx*dx + dy*dy + dz*dz)
+
+    cdef NPdouble_t dist_dx = dx / dist
+    cdef NPdouble_t dist_dy = dy / dist
+    cdef NPdouble_t dist_dz = dz / dist
+
+    cdef DIST output
+    output.dist = dist
+    output.dist_dx = dist_dx
+    output.dist_dy = dist_dy
+    output.dist_dz = dist_dz
+
+    return output
+
+
+
+cpdef distance_xyz_mol(np.ndarray[NPdouble_t, ndim=2] xyz_arr, long n_atoms):
+    """calculate distances from coordinates, and the derivatives
+
+            Args:
+
+                xyz_arr: coordinates; 2D numpy array of shape (n_atoms, 3)
+                n_atoms: number of atoms
+
+
+            Outputs:
+                distances_xyz: distance values in the form of a list (& also
+                                its derivatives )
+                    distances_xyz[index] = [[distance ij, distance deriv ij ], ... ]
+                    distances_xyz[index, 0] = distance
+                    distances_xyz[index, 1:3] = dR/dx, dR/dy, dR/dz
+
+
+
+    Ways to Get the Atom Index from xyz_arr
+    xyz_arr[atom_index] = (x,y,z)
+
+
+    Comment:
+    There is a major change from the Thuong's original code.
+    Instead of using the pandas frame, the indexing algorithm mentioned above
+    will be used to access the distance_xyz (np.array) It might help to speed up.
+
+    TODO: Convert this section into C code.
+
+    """
+
+    # Ways to Get the Atom Index from XYZ_to_arr
+    #
+
+    # Define Counts
+    cdef long count = 0
+    cdef long at1, at2
+
+    # Define Temp Vars
+    cdef NPdouble_t x1, y1, z1, x2, y2, z2
+    cdef NPdouble_t dx, dy, dz
+    cdef DIST output
+
+    #distance_arr = [0.0] * int( (n_atoms * (n_atoms - 1)/2) )
+    #distance_arr = np.zeros(shape = int( n_atoms * (n_atoms - 1) / 2) )
+    cdef long n_dist = <long>(n_atoms * (n_atoms -1) / 2)
+
+
+
+
+
+    cdef np.ndarray[NPdouble_t, ndim=2] distance_arr = np.zeros( [n_dist, 4], NPdouble )
+    #cdef np.ndarray[NPdouble_t, ndim=2] Gfunc_deriv_data = np.zeros([n_symm_func, 3], NPdouble )
+
+    #for at1 in np.arange(n_atoms):
+    for at1 in range(0, n_atoms, 1):
+        x1 = xyz_arr[at1, 0]
+        y1 = xyz_arr[at1, 1]
+        z1 = xyz_arr[at1, 2]
+
+        for at2 in range(at1+1, n_atoms, 1):
+            x2 = xyz_arr[at2, 0]
+            y2 = xyz_arr[at2, 1]
+            z2 = xyz_arr[at2, 2]
+
+            # dx = x2 - x1
+            # dy = y2 - y1
+            # dz = z2 - z1
+
+            output = distance_xyz_ind(x1, y1, z1, x2, y2, z2)
+
+            distance_arr[count, 0] = output.dist
+            distance_arr[count, 1] = output.dist_dx
+            distance_arr[count, 2] = output.dist_dy
+            distance_arr[count, 3] = output.dist_dz
+
+            count += 1
+
+    return distance_arr
+
+
+
+"""
+##########
+
+From SymmDerivIndCython (For Pre-Calculation. )
+
+##########
+"""
+
+cdef NPdouble_t cos_angle_calc(NPdouble_t Rij, NPdouble_t Rik, NPdouble_t Rjk) nogil:
+    cdef NPdouble_t cos_angle;
+    cos_angle = (pow(Rij, 2.0) + pow(Rik, 2.0) - pow(Rjk, 2.0))/(2.0 * Rij * Rik);
+
+    return cos_angle;
+
+cdef NPdouble_t rad_filter_for_ang_calc(NPdouble_t Rij, NPdouble_t Rik, NPdouble_t Rjk, NPdouble_t eta) nogil:
+    cdef NPdouble_t rad_filter;
+    rad_filter = exp(-eta*   pow( (Rij + Rik + Rjk),2.0));
+    return rad_filter;
+
+
+cdef NPdouble_t ddRij_G_calc_mod(NPdouble_t Rij, NPdouble_t Rik, NPdouble_t Rjk, NPdouble_t eta, NPdouble_t zeta, NPdouble_t lambd, NPdouble_t cos_angle, NPdouble_t rad_filter_for_ang) nogil:
+    """Modified Version of the derivative by introducing the cache to reduce repeated calculation.
+
+    """
+    #cdef NPdouble_t cos_angle = cos_angle_calc(Rij, Rik, Rjk);
+    #cdef NPdouble_t rad_filter_for_ang = rad_filter_for_ang_calc(Rij, Rik, Rjk, eta);
+
+
+    cdef NPdouble_t ddRij_G_var = (-pow(2.0, (2.0-zeta)) * rad_filter_for_ang * eta * (Rij + Rik + Rjk)
+              * pow(1.0 + lambd * cos_angle, zeta)
+              + pow(2.0, (1.0-zeta)) * rad_filter_for_ang  * (lambd/Rik - lambd * cos_angle / Rij)
+              * pow((1.0 + lambd * cos_angle), (-1.0+zeta)) * zeta);
+    return ddRij_G_var;
+
+
+cdef NPdouble_t ddRik_G_calc_mod(NPdouble_t Rij, NPdouble_t Rik, NPdouble_t Rjk, NPdouble_t eta, NPdouble_t zeta, NPdouble_t lambd, NPdouble_t cos_angle, NPdouble_t rad_filter_for_ang) nogil:
+    """ Modified version of derivative by introducing cache to reduce the repeated computation.
+
+
+    """
+    #cdef NPdouble_t cos_angle = cos_angle_calc(Rij, Rik, Rjk);
+    #cdef NPdouble_t rad_filter_for_ang = rad_filter_for_ang_calc(Rij, Rik, Rjk, eta);
+
+
+
+    cdef NPdouble_t ddRik_G_var = (-pow(2.0, (2.0-zeta)) * rad_filter_for_ang * eta * (Rij + Rik + Rjk)
+              * pow(1.0 + lambd * cos_angle, zeta)
+              + pow(2.0, (1.0-zeta)) * rad_filter_for_ang * (lambd/Rij - lambd * cos_angle / Rik)
+              * pow((1.0 + lambd * cos_angle), (-1.0+zeta)) * zeta);
+    return ddRik_G_var;
+
+
+
+cdef NPdouble_t ddRjk_G_calc_mod(NPdouble_t Rij, NPdouble_t Rik, NPdouble_t Rjk,  NPdouble_t  eta, NPdouble_t zeta, NPdouble_t lambd, NPdouble_t cos_angle, NPdouble_t rad_filter_for_ang) nogil:
+    """ Modified version of the derivative by the introduction of cache and
+    reduce repeated calculation.
+
+
+    """
+    #cdef NPdouble_t cos_angle = cos_angle_calc(Rij, Rik, Rjk);
+    #cdef NPdouble_t rad_filter_for_ang = rad_filter_for_ang_calc(Rij, Rik, Rjk, eta);
+
+    cdef NPdouble_t ddRjk_G_var = (-pow(2.0, (2.0-zeta) )    * rad_filter_for_ang * eta * (Rij + Rik + Rjk)
+              * pow((1.0 + lambd * cos_angle), zeta)
+              - (   pow(2,(1.0-zeta))            * rad_filter_for_ang * lambd * Rjk
+              * pow( (1.0 + lambd * cos_angle), (-1.0+zeta)) * zeta) / (Rij*Rik));
+
+    return ddRjk_G_var
+
+
+
+"""
+##########
+
+From SymmFuncIndPython
+
+##########
+"""
+
+
+
+
+cdef NPdouble_t radial_filter_ind(NPdouble_t Rs, NPdouble_t eta, NPdouble_t Rij) nogil:
+    """radial filter for symmetry functions
+    # Arguments
+        Rs, eta: radial symmetry function parameters; float
+        Rij: distance values between two given atoms i and j;
+                1D numpy array of length Nsamples
+
+    # Returns
+        G_rad_ij: radial filter values; 1D numpy array of length nb_samples
+    """
+    #G_rad_ij = math.exp(-eta * (Rij-Rs)**2)
+    cdef NPdouble_t G_rad_ij = exp(-eta * pow((Rij - Rs), 2))
+    return G_rad_ij
+
+
+# Angular Filter Function is the Angular Symmetry Function
+# For a given set of (eta, zeta, lambd), caclaulte
+# The augular component of G value for all the neighbour atoms
+
+# To change the filter function, modify it here.
+cdef NPdouble_t angular_filter_ind(NPdouble_t Rij, NPdouble_t Rik, NPdouble_t Rjk, NPdouble_t eta, NPdouble_t zeta, NPdouble_t lambd, NPdouble_t cos_angle, NPdouble_t rad_filter) nogil:
+    """angular filter for angular symmetry functions
+
+          Args:
+              eta, zeta, lambd: angular symmetry function parameters
+              Rij, Rik, Rjk: distances among three atoms i, j, k; 1D arrays of length nb_samples
+
+          Outputs:
+              G_ang_ij: angular filter values; 1D numpy array of length nb_samples
+
+    """
+    #cdef NPdouble_t cos_angle = (pow(Rij,2) + pow(Rik,2) - pow(Rjk,2))/(2.0 * Rij * Rik)
+    #cdef NPdouble_t rad_filter = exp(-eta*pow((Rij + Rik + Rjk),2))
+    cdef NPdouble_t G_ang_ijk = pow(2,(1.0-zeta)) * pow((1.0 + lambd * cos_angle),zeta) * rad_filter
+
+
+    return G_ang_ijk
+
+
+cpdef symm_func_mol_arr(np.ndarray[NPdouble_t, ndim=2] distance_arr, np.ndarray[NPint_t, ndim=1] at_ele_arr,
+                        np.ndarray[NPint_t, ndim=2] neighbourlist_arr, np.ndarray[NPint_t, ndim=1] neighbourlist_count,
+                        np.ndarray[NPint_t, ndim=3] neighbourpair_arr, np.ndarray[NPint_t, ndim=1] neighbourpair_count,
+                        np.ndarray[NPdouble_t, ndim=2] count_Gparam,
+                        np.ndarray[NPint_t, ndim=2] ele_count , np.ndarray[NPint_t , ndim=2] pair_count,
+                        long n_atoms, long n_symm_func, long n_ang_count, long n_ele):
+    """
+    Refactor the entire symmetry function calculation into
+    arr operations to speed up.
+
+    (count refers to the symmetry function vector count )
+
+            Args:
+
+                distance_arr: distances array
+                            (Generated by distance_arr_generator function )
+                at_ele_arr: return the element's index  for a given atom index.
+                            (Reverse dictionary of at_idx_map)
+                neighbourlist_arr: np.array, return the structure of the
+                            neighbourlist for the given atom.
+                            neighbourlist_arr[at_idx] = [neightbour atom idx]
+                            (For use in radial symmetry function)
+                neighbourpair_arr: np.array, return the structure of the
+                            all the neightbour pairs of the given atom.
+                            neightbourpari_arr[at_idx]
+                            = [(at1, at2)] (at1 and at2 are neighbours of the
+                                            given atom with index of at_idx)
+
+                neighbourlist_count:
+                            neighbourlist_count[at_idx] = No. Neighbours in the
+                                      neighbour list for given atom
+                neighbourpair_count:
+                            neighbourpair_count[at_idx] = No. Neighbour pairs
+                                      in the neighbour pair for given atom
+
+
+                count_Gparam: a np.array that has the structure
+                            count_Gparam[count]  = Gparam_list (specified for the given count)
+
+                            count_Gparam = (count, max No. Params)
+
+                n_atoms: number of atoms
+                n_symm_func: number of symmetry functions
+                n_ele:   number of elements
+
+
+            Outputs:
+
+               Gfunc_data: symmetry function values;
+                            dictionary with 1st layer keys = atom types,
+                                2nd layer keys = atom indexes,
+                                values = 2D arrays with shape=(1, n_symm_func)
+
+                            Gfunc_data[element][at_idx] = (1, n_symm_func)
+
+               (New) Gfunc_data[at_idx] = (1, n_symm_func)
+               New Data structure should be adopted when the input can be organzied.
+               It is much more organized since this is an numpy array.
+               Even though The New Data structure looks like it only supports
+               fixed number of atoms, since the data will be converted into input,
+               it is still able to work with multiple different arrays.
+
+    Comments:
+    Working In Progress.
+
+    Attention:
+    Neighbour list will change with different configurations.
+    A simpler way might be to loop through every of the atom, and then
+    just check for the distances .
+
+
+    """
+    cdef NPint_t at_idx_i, at_idx_j, at_idx_k
+    cdef NPdouble_t Rij, Rjk, Rik
+    cdef NPdouble_t Rs, eta, zeta, lambd
+
+    cdef long symm_count, symm_count_0
+    cdef long symm_count_start, symm_count_end
+    cdef long n_pairs = <long> n_atoms * (n_atoms - 1) / 2
+    cdef long angular_idx
+
+
+    cdef long ij_idx, ik_idx, jk_idx
+
+
+    cdef np.ndarray[NPdouble_t, ndim=3] Gfunc_data = np.zeros([n_atoms, 1, n_symm_func], NPdouble) # New Gfunc structure
+
+    cdef np.ndarray[NPdouble_t, ndim=3]  ang_precalc = np.zeros([n_atoms * n_pairs, n_ang_count, 3], NPdouble)
+
+
+    #dG_all_dict = {}
+    cdef NPdouble_t ddRij_G, ddRik_G, ddRjk_G
+
+    cdef NPdouble_t ddx_Rij, ddx_Rjk, ddx_Rik
+    cdef NPdouble_t ddy_Rij, ddy_Rjk, ddy_Rik
+    cdef NPdouble_t ddz_Rij, ddz_Rjk, ddz_Rik
+    cdef DIST dist_output
+
+    cdef NPint_t ele_idx_i, ele_idx_j, ele_idx_k
+    cdef long pair_jk_idx
+
+    cdef NPint_t nlist_count
+    cdef long nlist_count_i
+    cdef NPint_t npair_count
+    cdef long npair_count_i
+
+
+    cdef NPdouble_t cos_angle, rad_filter_for_ang
+
+
+    # This for loop goes through all atoms
+    for at_idx_i in range(0, n_atoms, 1):
+
+        # This for loop goes through all neighbours of the atom
+        # For the Radial Components
+
+        # Prepare for For loop
+        nlist_count_i = neighbourlist_count[at_idx_i]
+        # Go Through Neighbours
+        for nlist_count in range(0, nlist_count_i, 1):
+        #for at_idx_j in neighbourlist_arr[at_idx_i]:
+            at_idx_j = neighbourlist_arr[at_idx_i, nlist_count]
+            ij_idx = distance_xyz_index(at_idx_i, at_idx_j, n_atoms)
+            Rij = distance_arr[ij_idx,0]
+
+            ele_idx_j = at_ele_arr[at_idx_j]
+
+
+            symm_count_start = ele_count[ele_idx_j, 0]
+            symm_count_end   = ele_count[ele_idx_j, 1]
+            for symm_count in range(symm_count_start, symm_count_end,1):
+                Rs = count_Gparam[symm_count, 0]                  #rad_params[0]
+                eta = count_Gparam[symm_count, 1]                 #rad_params[1]
+                Gfunc_data[at_idx_i,0, symm_count] += radial_filter_ind(Rs, eta, Rij)
+
+
+        # This for loop goes through all neighbours pairs of the atoms
+        # For the angular components
+        # Go through all the neighbour pairs
+
+        # Prepare for the For-loop (with indices)
+        npair_count_i = neighbourpair_count[at_idx_i]
+
+        for npair_count in range(0, npair_count_i, 1):
+        #for neighbour_pair in neighbourpair_arr[at_idx_i]:
+
+            # Get the indices
+            #at_idx_j = neighbour_pair[0]
+            #at_idx_k = neighbour_pair[1]
+            at_idx_j = neighbourpair_arr[at_idx_i, npair_count, 0]
+            at_idx_k = neighbourpair_arr[at_idx_i, npair_count, 1]
+
+
+            ij_idx = distance_xyz_index(at_idx_i, at_idx_j, n_atoms)
+            ik_idx = distance_xyz_index(at_idx_i, at_idx_k, n_atoms)
+            jk_idx = distance_xyz_index(at_idx_j, at_idx_k, n_atoms)
+
+
+            # Get the Distance and Derivative  (Store for next calculation)
+
+            Rij = distance_arr[ij_idx,0]
+            Rik = distance_arr[ik_idx,0]
+            Rjk = distance_arr[jk_idx,0]
+
+            # ddx_Rij = distance_arr[ij_idx,1]
+            # ddy_Rij = distance_arr[ij_idx,2]
+            # ddz_Rij = distance_arr[ij_idx,3]
+            #
+            # ddx_Rjk = distance_arr[jk_idx,1]
+            # ddy_Rjk = distance_arr[jk_idx,2]
+            # ddz_Rjk = distance_arr[jk_idx,3]
+            #
+            # ddx_Rik = distance_arr[ik_idx,1]
+            # ddy_Rik = distance_arr[ik_idx,2]
+            # ddz_Rik = distance_arr[ik_idx,3]
+
+
+            # Get the pair, for next for loop over the Element Pair (eg. 'OH')
+            ele_idx_i = at_ele_arr[at_idx_i]
+            ele_idx_j = at_ele_arr[at_idx_j]
+            ele_idx_k = at_ele_arr[at_idx_k]
+
+            pair_jk_idx = get_pair_idx(ele_idx_j, ele_idx_k,  n_ele)
+
+
+            # Get the corresponds counts in the vector
+            symm_count_start = pair_count[pair_jk_idx,0]
+            symm_count_end   = pair_count[pair_jk_idx,1]
+            for symm_count in range(symm_count_start, symm_count_end , 1):
+                eta = count_Gparam[symm_count, 0]               #ang_params[0]
+                zeta = count_Gparam[symm_count, 1]              #ang_params[1]
+                lambd = count_Gparam[symm_count, 2]             #ang_params[2]
+
+                cos_angle = cos_angle_calc(Rij, Rik, Rjk)
+                rad_filter_for_ang = rad_filter_for_ang_calc(Rij, Rik, Rjk, eta)
+
+                Gfunc_data[at_idx_i, 0, symm_count] += angular_filter_ind(Rij, Rik, Rjk, eta, zeta, lambd, cos_angle, rad_filter_for_ang)
+
+
+
+                ddRij_G = ddRij_G_calc_mod(Rij, Rik, Rjk, eta, zeta, lambd, cos_angle, rad_filter_for_ang);
+                ddRik_G = ddRik_G_calc_mod(Rij, Rik, Rjk, eta, zeta, lambd, cos_angle, rad_filter_for_ang);
+                ddRjk_G = ddRjk_G_calc_mod(Rij, Rik, Rjk, eta, zeta, lambd, cos_angle, rad_filter_for_ang);
+
+                # dG_all_dict[(at_idx_i, at_idx_j, at_idx_k, symm_count)] = (ddx_Rij, ddy_Rij, ddz_Rij,
+                #                                                             ddx_Rik, ddy_Rik, ddz_Rik,
+                #                                                             ddx_Rjk, ddy_Rjk, ddz_Rjk,
+                #                                                             ddRij_G, ddRik_G, ddRjk_G)
+
+                symm_count_0 = symm_count - symm_count_start
+                angular_idx  = get_angle_idx(at_idx_i, jk_idx, n_pairs)
+                #print("Angular Index", angular_idx, " symm_count_0, ", symm_count_0)
+                ang_precalc[angular_idx, symm_count_0, 0]  =  ddRij_G
+                ang_precalc[angular_idx, symm_count_0, 1]  =  ddRik_G
+                ang_precalc[angular_idx, symm_count_0, 2]  =  ddRjk_G
+
+    return Gfunc_data, ang_precalc #dG_all_dict
+
+
+
+
+
+
+
+
+
+
+def symm_func_mol_compiled(atoms, at_ele_arr,
+                        count_Gparam,
+                        ele_count, pair_count,
+                        n_atoms, n_symm_func, n_ang_count,  n_ele):
+    """A wrapper for the compiled version of symmetry function.
+
+
+    Will:
+        Calculate the distance for the given molecule.
+        Calculate the neighbour list for the given molecule.
+
+    TODO:
+    Change this function because this is too unelegant.
+    """
+    md_samplesArr = pd.Series([atoms])
+
+    n_atoms, xyzArr = src_nogrd.xyzArr_generator(md_samplesArr)
+    rad_arr, ang_arr = Calculation.get_neighbour_cutoff(xyzArr, 2)
+
+    distance_arr = distance_xyz_mol(xyzArr, n_atoms)
+    neighbourlist_arr, neighbourpair_arr, neighbourlist_count, neighbourpair_count = Calculation.get_neighbour(distance_arr, n_atoms)
+
+    Gfunc_data, ang_precalc = symm_func_mol_arr(distance_arr, at_ele_arr,
+                                    neighbourlist_arr, neighbourlist_count,
+                                    neighbourpair_arr, neighbourpair_count,
+                                    count_Gparam,
+                                    ele_count, pair_count,
+                                    n_atoms, n_symm_func, n_ang_count, n_ele)
+
+    return Gfunc_data, xyzArr, distance_arr, neighbourlist_arr, neighbourlist_count, neighbourpair_arr, neighbourpair_count, ang_precalc
+
+
+
+
+
+
+
+
+
+def symm_func_show_ind(Gfunc_data_ind):
+    """
+    Generate a plot of the symmetry function (Gfunc_data) of an atom with index (at)
+    Raise Error When the array have nan.
+
+        Args:
+                Gfunc_data_ind: Symmetry Function Vector For Individual Atom
+                                a np.array of shape (1, n_symm)
+
+        Outputs:
+                No. Only Generates the Graph.
+    """
+
+    n_symm = Gfunc_data_ind.shape[1]
+
+
+    x_index = np.arange(n_symm)
+
+
+    plt.plot(n_symm, Gfunc_data_ind)
+    plt.show()
+    return
+
+
+
+
+
+
+
+
+
+
+"""
+#########
+
+Symmetry Function For Molecules:
+(For Numerical Calculation)
+(Just Wrappers)
+
+#########
+"""
+
+
+def symm_func_mol(atoms, at_idx_map, Gparam_dict):
+    """Just a Wrapped to Create the Symmetry Function for a given molecule
+
+            Outputs:
+                Gfunc_mol: Symmetry Function For the given molecule
+                        Same Strcture as Gfunc_data
+                        Gfunc_data[element][atom_idx] = (1, n_symm_func)
+                        Number of Symmetry Function 1.
+    Assumes that all the configurations have the same at_idx_map
+    """
+    md_samplesArr = pd.Series([atoms])
+    nAtoms, xyzArr = src_nogrd.xyzArr_generator(md_samplesArr)
+    distances = src_nogrd.distances_from_xyz(xyzArr, nAtoms)
+
+    # Assume that Gparam_dict and at_idx_map is the save for all the
+    # configurations
+    # It is possible to generate at_idx_map for each individual configurations
+    # That will consume much more time
+    Gfunc_mol = src_nogrd.symmetry_function(distances, at_idx_map, Gparam_dict)
+    return Gfunc_mol
+
+
+def feat_func_mol(at_idx_map, md_feat):
+    """ Prepare the Feature array for individual feat functions. """
+    return src_nogrd.feat_function(at_idx_map, md_feat, 1)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+"""
+##########
+
+Dealing with Inputs
+
+###########
+"""
+
+
+
+
+
+
+
+
+def get_inp(at_idx_map, Gfunc_scaled, Feat_scaled=None):
+    """Prepare the input file for the neural network
+
+            Args:
+                at_idx_map: atom index map
+                Gfunc_scaled: scaled symmetry function
+                            Gfunc_data[element][atom_idx] = (1, n_symm_func)
+                Feat_scaled: scaled Feature functions
+                            Feat_data[element][atom_idx] = (1, n_feat)
+                            By Default it is equal to None.
+
+    Comments:
+    Suprisingly, this function works for both one molecule and multiple
+    Configurations since they have the same input shape
+    The 1 mentioned above can be replaced by n_samples.
+    """
+    inp_arr = []
+    for at_type in at_idx_map.keys():
+        for at_idx in at_idx_map[at_type]:
+            inp_arr.append(Gfunc_scaled[at_type][at_idx])
+            if Feat_scaled != None:
+                inp_arr.append(Feat_scaled[at_type][at_idx])
+            else:
+                continue
+
+    return inp_arr
+
+
+def get_atoms_inp(atoms, at_idx_map, Gparam_dict, feat_arr=None, mode="old"):
+    if feat_arr == None:
+        Feat_data = None
+    else:
+        Feat_data  = feat_func_mol(at_idx_map, [feat_arr])
+
+    if mode == "old":
+        Gfunc_data = symm_func_mol(atoms, at_idx_map, Gparam_dict)
+        input = get_inp(at_idx_map, Gfunc_data, Feat_data)
+    elif mode == 'compiled':
+        Gfunc_data = symm_func_mol_compiled()
+    return input

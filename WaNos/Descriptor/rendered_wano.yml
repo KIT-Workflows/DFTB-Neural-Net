@@ -1,0 +1,4 @@
+Charges: Charges.txt
+Cut-off distance: 5.0
+Geometries: geometry
+Include charges: false
