@@ -1,10 +1,13 @@
 #! /bin/bash
 
 module purge
-module load gnu8/8.3.0
-module load openblas/0.3.7
 
-export PATH="/home/ws/gt5111/opt/dftb+/bin:$PATH"
+# set PATH to DFTB+ / load module
+
+module load gnu7/7.3.0
+module load openblas/0.2.20
+
+export PATH="/home/ws/qs7669/gnu7/opt/dftb+/bin:$PATH"
 export OMP_NUM_THREADS=$SLURM_NPROCS
 
 python run_dftb+.py

@@ -184,7 +184,7 @@ if __name__ == '__main__':
             if 'zero point' in ao_line: results_dict['ZPE']=float(ao_line.split()[6])
         results_dict['vibrational frequencies']=vib_freq
 
-    with open('results.yml','w') as outfile: yaml.dump(results_dict,outfile)
+    with open('turbomole_results.yml','w') as outfile: yaml.dump(results_dict,outfile)
 
     output_files=['alpha','auxbasis','basis','beta','control','coord','energy','forceapprox','gradient','hessapprox','mos','optinfo','rendered_wano.yml','sing_a','trip_a','unrs_a'] # implement symmetry: irrep names in [sing,trip,unrs]_irrep
     for filename in output_files:

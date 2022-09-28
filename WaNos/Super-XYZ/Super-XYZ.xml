@@ -13,10 +13,13 @@
  		<Keyword>Multvariables</Keyword>
 </WaNoMeta>
   
-<WaNoRoot name="Super-XYZ">  
+<WaNoRoot name="Super-XYZ"> 
+  <WaNoBool name="Corrective model">False</WaNoBool>
   <WaNoFile logical_filename="Molecules.tar.xz"  name = "Molecules">Molecules.tar.xz</WaNoFile>
   <WaNoFile logical_filename="Table-var.csv"  name = "Table energy">Table-var.csv</WaNoFile>
   <WaNoFile logical_filename="input-dict.yml"  name = "Structure-names">input-dict.yml</WaNoFile>
+  <WaNoBool name="Get charges">True</WaNoBool>
+	<WaNoFile visibility_condition="%s == True" visibility_var_path="Get charges" logical_filename="asambeled.yml" name="Search-in-file">file-name.yml</WaNoFile>
 </WaNoRoot>
 
   <WaNoExecCommand>
@@ -33,5 +36,6 @@
     <WaNoOutputFiles>
       <WaNoOutputFile>appended_structures.xyz</WaNoOutputFile>
       <WaNoOutputFile>rearranged-table.csv</WaNoOutputFile>
+      <WaNoOutputFile>cargas.txt</WaNoOutputFile>
     </WaNoOutputFiles>
 </WaNoTemplate>

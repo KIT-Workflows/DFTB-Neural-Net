@@ -1,1 +1,25 @@
-energy: -1314.0675103
+Basis-set: def2-TZVP
+Charge: -1
+Functional: ' BLYP '
+Geometry-file: geometry
+Multiplicity: 1
+Title: test
+charges:
+  1: -0.231604
+  2: -0.12634
+  3: 0.084191
+  4: 0.093254
+  5: 0.083242
+  6: -0.267492
+  7: -0.350938
+  8: 0.086862
+  9: 0.071274
+  10: 0.097268
+  11: -0.28585
+  12: -0.491947
+  13: 0.067539
+  14: 0.077466
+  15: 0.093074
+orca_energy: -1314.3417294
+orca_title: test
+orca_units: Eh

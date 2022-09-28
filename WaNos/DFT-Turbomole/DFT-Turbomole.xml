@@ -133,7 +133,7 @@
     
     <WaNoOutputFiles>
         <WaNoOutputFile>results.tar.xz</WaNoOutputFile>
-        <WaNoOutputFile>results.yml</WaNoOutputFile>
+        <WaNoOutputFile>turbomole_results.yml</WaNoOutputFile>
         <WaNoOutputFile>final_structure.xyz</WaNoOutputFile>
     </WaNoOutputFiles>
 </WaNoTemplate>

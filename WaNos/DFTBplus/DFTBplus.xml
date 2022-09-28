@@ -35,10 +35,11 @@
 			<WaNoInt visibility_condition="%s == True" visibility_var_path="DFTB options.SCC calculation" name='Max SCC iterations'>200</WaNoInt>
 
 			<WaNoBool name="Third order">False</WaNoBool>
-			
+
         	       	<WaNoDropDown name="Slater-Koster parameters">
                 		<Entry id="0" chosen="True">3ob</Entry>
                 		<Entry id="1">mio</Entry>
+						<Entry id="2 ">AuH0</Entry>
 	        		</WaNoDropDown>
 					
 					<WaNoDropDown name="Dispersion" description="Dispersion corrections (van der Waals interactions)">
@@ -101,8 +102,8 @@
     </WaNoRoot>
 
     <WaNoExecCommand>
-	source /home/ws/gt5111/miniconda3/etc/profile.d/conda.sh
-	conda activate
+	source  ~/anaconda3/etc/profile.d/conda.sh
+	conda activate dftb-nn
 	bash ./dftb+.sh
 	</WaNoExecCommand>
 

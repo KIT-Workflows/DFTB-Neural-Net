@@ -16,10 +16,10 @@
 	</WaNoMeta>
 	
 	<WaNoRoot name="ORCA">
-		<WaNoFile logical_filename="geometry" name="Geometry-file">file.xyz</WaNoFile>
 		<WaNoString name="Title">test</WaNoString>
+		<WaNoFile logical_filename="geometry" name="Geometry-file">file.xyz</WaNoFile>
 		<WaNoDropDown name="Functional">
-			<Entry id="0" chosen="True"> BLYP </Entry>
+			<Entry id="0"> BLYP </Entry>
 			<Entry id="1"> BP86 </Entry>
 			<Entry id="2"> PBE </Entry>
 			<Entry id="3"> OLYP </Entry>
@@ -41,13 +41,13 @@
 			<Entry id="19"> wB97 </Entry>
 			<Entry id="20"> wB97X </Entry>
 			<Entry id="21"> wB97X-D3 </Entry>
-			<Entry id="22">DLPNO-CCSD(T)</Entry>
+			<Entry id="22" chosen="True">DLPNO-CCSD(T)</Entry>
 		</WaNoDropDown>
 		<WaNoDropDown name="Basis-set">
 			<Entry id="0">def2-SV(P)</Entry>
 			<Entry id="1">def2-SVP</Entry>
-			<Entry id="2" chosen="True">def2-TZVP(-f)</Entry>
-			<Entry id="3">def2-TZVP</Entry>
+			<Entry id="2">def2-TZVP(-f)</Entry>
+			<Entry id="3" chosen="True">def2-TZVP</Entry>
 			<Entry id="4">def2-TZVPP</Entry>
 			<Entry id="5">def2-QZVP</Entry>
 			<Entry id="6">def2-QZVPP</Entry>
@@ -69,9 +69,8 @@
 	</WaNoRoot>
 	
 	<WaNoExecCommand>
-		export NANOVER=V4
-		source $NANOMATCH/$NANOVER/local_anaconda/bin/activate
-		conda activate simstack_kit
+		source  ~/anaconda3/etc/profile.d/conda.sh
+		conda activate dftb-nn
 		python orca_in.py
 
 		chmod +x run-ORCA.sh

@@ -168,7 +168,6 @@ if __name__ == '__main__':
                 else: os.rename('final_structure.xyz','intermediate_structure.xyz')
     else: os.rename(struct_0_file,'final_structure.xyz')
 
-    ''' Outputs ''' 
     results_dict = {}
     results_dict['charges'] = elec_charges()
     results_dict['Slatko'] = settings['skf']
@@ -179,6 +178,13 @@ if __name__ == '__main__':
             if line.startswith('Total energy'):
                 results_dict['dftb_energy']=float(line.split()[2])
                 break
+    if settings["Simulation"] == "Machine Learning":
+        with open('dftb.out') as infile:
+            for line in infile.readlines():
+                if line.startswith('MACHINE_LEARNING_ENERGY'):
+                    results_dict['ML_correction']=float(line.split()[1])
+                    break
+    else: results_dict['ML_correction']=0
 
     with open('dftb_plus_results.yml','w') as outfile: 
         yaml.dump(results_dict, outfile)

@@ -1,5 +1,6 @@
 Basis-set: def2-TZVP
-Functional: B3LYP
+Charge: -1
+Functional: ' BLYP '
 Geometry-file: geometry
-label: test
-var-name: tot_energy
+Multiplicity: 1
+Title: test
