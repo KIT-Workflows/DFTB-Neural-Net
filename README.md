@@ -67,3 +67,10 @@ pip3 install ordered_enum
   - Pickle files of the machine learning model.
 
 In the video **$\Delta$-learning workflow**, we teach how to set up the workflow to run it in SimStack. 
+
+##References
+
+1. Jörg Behler and Michele Parrinello. “Generalized Neural-Network Representation of HighDimensional Potential-Energy Surfaces”. en. In: Physical Review Letters 98.14 (Apr. 2007), p. 146401.![image](https://user-images.githubusercontent.com/51993842/198532641-528ea62b-68c0-404a-9a03-4340baf81eae.png)
+
+
+
