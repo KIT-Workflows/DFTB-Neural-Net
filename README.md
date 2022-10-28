@@ -67,3 +67,12 @@ pip3 install ordered_enum
   - Pickle files of the machine learning model.
 
 In the video **$\Delta$-learning workflow**, we teach how to set up the workflow to run it in SimStack. 
+
+## References
+
+1. J. Behler and M. Parrinello, Physical Review Letters 98, 146401 (2007).
+2. J. Zhu, V. Q. Vuong, B. G. Sumpter, and S. Irle, MRS Communications 9, 867 (2019).
+3. R. Ramakrishnan, P. O. Dral, M. Rupp, and O. A. von Lilienfeld, Journal of Chemical Theory and Computation 11, 2087 (2015).
+4. C. R. Rêgo, J. Schaarschmidt, T. Schlöder, M. Penaloza-Amion, S. Bag, T. Neumann, T. Strunk, and W. Wenzel, Frontiers in Materials , 283.
+5. C. L. Gómez-Flores, D. Maag, M. Kansari, V.Q. Vuong, S. Irle, F. Gräter, T. Kubař, and M. Elstner, Journal of Chemical Theory and Computation 18, 1213 (2022).
+
