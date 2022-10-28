@@ -74,5 +74,5 @@ In the video **$\Delta$-learning workflow**, we teach how to set up the workflow
 2. J. Zhu, V. Q. Vuong, B. G. Sumpter, and S. Irle, MRS Communications 9, 867 (2019).
 3. R. Ramakrishnan, P. O. Dral, M. Rupp, and O. A. von Lilienfeld, Journal of Chemical Theory and Computation 11, 2087 (2015).
 4. C. R. Rêgo, J. Schaarschmidt, T. Schlöder, M. Penaloza-Amion, S. Bag, T. Neumann, T. Strunk, and W. Wenzel, Frontiers in Materials , 283.
-5. C. L. Gómez-Flores, D. Maag, M. Kansari, V.Q. Vuong, S. Irle, F. Gräter, T. Kubař, and M. Elstner, Journal of Chemical Theory and Computation 18, 1213 (2022), pMID: 34978438, https://doi.org/10.1021/acs.jctc.1c00811.
+5. C. L. Gómez-Flores, D. Maag, M. Kansari, V.Q. Vuong, S. Irle, F. Gräter, T. Kubař, and M. Elstner, Journal of Chemical Theory and Computation 18, 1213 (2022).
 
