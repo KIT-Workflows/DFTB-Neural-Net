@@ -68,7 +68,7 @@ pip3 install ordered_enum
 
 In the video **$\Delta$-learning workflow**, we teach how to set up the workflow to run it in SimStack. 
 
-##References:
+## References
 
 1. J. Behler and M. Parrinello, Physical Review Letters 98, 146401 (2007).
 2. J. Zhu, V. Q. Vuong, B. G. Sumpter, and S. Irle, MRS Communications 9, 867 (2019).
