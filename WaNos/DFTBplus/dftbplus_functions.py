@@ -25,11 +25,12 @@ def symfunc(filename):
 def write_input(settings,struct_file):
     struct = read(struct_file)
     bool2yn = {True:'Yes',False:'No'}
-    sk_dict = {'3ob':'3ob-3-1','mio':'mio-1-1','AuH0':'AuH0'}
+    sk_dict = {'3ob':'3ob-3-1','mio':'mio-1-1','AuH0':'AuH0','Trans3D':'Trans3D'}
     max_ang_mom = {}
     max_ang_mom['3ob'] = {"Br":"d","C":"p","Ca":"p","Cl":"d","F":"p","H":"s","I":"d","K":"p","Mg":"p","N":"p","Na":"p","O":"p","P":"d","S":"d","Zn":"d"}
     max_ang_mom['mio'] = {"C":"p","H":"s","N":"p","O":"p","P":"p","S":"p"}
     max_ang_mom['AuH0'] = {"Au":"d","H":"s","O":"p"}
+    max_ang_mom['Trans3D'] = {"C":"p","H":"s","N":"p","O":"p","P":"p","S":"p","Ni":"d"}
     Hubbard = {}
     Hubbard['3ob'] = {"Br":-0.0573,"C":-0.1492,"Ca":-0.0340,"Cl":-0.0697,"F" :-0.1623,"H" :-0.1857,"I" :-0.0433,"K" :-0.0339,"Mg" :-0.02,"N" :-0.1535,"Na" :-0.0454,"O" :-0.1575,"P" :-0.14,"S" :-0.11,"Zn" :-0.03}
 

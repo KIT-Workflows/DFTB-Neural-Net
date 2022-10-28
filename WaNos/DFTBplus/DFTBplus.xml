@@ -40,6 +40,7 @@
                 		<Entry id="0" chosen="True">3ob</Entry>
                 		<Entry id="1">mio</Entry>
 						<Entry id="2 ">AuH0</Entry>
+						<Entry id="3 ">Trans3D</Entry>
 	        		</WaNoDropDown>
 					
 					<WaNoDropDown name="Dispersion" description="Dispersion corrections (van der Waals interactions)">
