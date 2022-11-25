@@ -98,7 +98,7 @@ def search_string_in_file(file_name, string_to_search):
 def elec_charges():
 
     t1 = search_string_in_file("detailed.out","Atomic gross charges")[0][0]
-    structure = read("final_structure.xyz", format="xyz")
+    structure = read("initial_structure.xyz", format="xyz")
     tot_atoms = structure.get_global_number_of_atoms()
     n = t1+1
 
@@ -118,14 +118,14 @@ def elec_charges():
 
 if __name__ == '__main__':
     
-    struct_0_file = 'initial_structure.xyz'
-
+    results_dict = {}
     settings = get_settings_from_rendered_wano()    
 
-    if settings['follow-up']:
-        os.system('mkdir old_results; tar -xf old_calc.tar.xz -C old_results')
-        if settings['use old struct']: os.system('cp old_results/final_structure.xyz %s'%(struct_0_file))
-        if settings['use old charges']: os.system('cp old_results(charges.bin .')
+    results_dict['Slatko'] = settings['skf']
+    results_dict['energy_unit'] = 'Hartree'
+    results_dict['dftb_title'] = settings['title']
+
+    struct_0_file = 'initial_structure.xyz'
     
     struct = read(struct_0_file)
     n_el = sum(struct.numbers)-settings['charge']
@@ -143,11 +143,11 @@ if __name__ == '__main__':
             num_iter += settings['max scc iter']
             if num_iter > settings['max scc iter']:
                 print('SCC not converged in maximum number of iterations (%i)'%(settings['max scc iter']))
-                exit(0)
-            if not settings['use old charges']:
-                settings['use old charges'] = True
-                dftbplus.write_input(settings,struct_0_file)
-    
+                results_dict['Converged']='No'
+                break
+        else: results_dict['Converged']='Yes'
+                
+
     if settings["Simulation"] == "Structure optimisation":
         os.system('cp dftb.out dftb_0.out')
         os.system('cp charges.bin charges_0.bin')
@@ -168,16 +168,6 @@ if __name__ == '__main__':
                 else: os.rename('final_structure.xyz','intermediate_structure.xyz')
     else: os.rename(struct_0_file,'final_structure.xyz')
 
-    results_dict = {}
-    results_dict['charges'] = elec_charges()
-    results_dict['Slatko'] = settings['skf']
-    results_dict['energy_unit'] = 'Hartree'
-    results_dict['dftb_title'] = settings['title']
-    with open('detailed.out') as infile:
-        for line in infile.readlines():
-            if line.startswith('Total energy'):
-                results_dict['dftb_energy']=float(line.split()[2])
-                break
     if settings["Simulation"] == "Machine Learning":
         with open('dftb.out') as infile:
             for line in infile.readlines():
@@ -185,6 +175,12 @@ if __name__ == '__main__':
                     results_dict['ML_correction']=float(line.split()[1])
                     break
     else: results_dict['ML_correction']=0
+
+    with open('detailed.out') as infile:
+        for line in infile.readlines():
+            if line.startswith('Total energy'):
+                results_dict['dftb_energy']=float(line.split()[2])
+                break
 
     with open('dftb_plus_results.yml','w') as outfile: 
         yaml.dump(results_dict, outfile)
